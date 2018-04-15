@@ -7,6 +7,10 @@
 
 #define WIDTH 41
 #define HEIGHT 21
+#define START_X 2
+#define START_Y 19
+#define END_X 39
+#define END_Y 19
 
 class ofApp : public ofBaseApp{
 

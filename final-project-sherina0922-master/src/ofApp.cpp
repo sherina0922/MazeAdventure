@@ -17,10 +17,10 @@ void ofApp::setup() {
     comp_camera.initGrabber(1280, 520);
 
     Maze::MazeSetup();
-    current_posX = 2;
-    current_posY = 19;
-    exit_posX = 39;
-    exit_posY = 19;
+    current_posX = START_X;
+    current_posY = START_Y;
+    exit_posX = END_X;
+    exit_posY = END_Y;
 }
 
 //--------------------------------------------------------------
@@ -42,7 +42,7 @@ void ofApp::draw() {
     if (USE_CAMERA_INPUT) {
         CameraTracking::DrawStylus(comp_camera.getWidth(), comp_camera.getHeight());
     }
-        view_camera.end();
+    view_camera.end();
     
 
 }
