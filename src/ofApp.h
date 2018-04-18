@@ -2,10 +2,18 @@
 #pragma once
 
 #include "ofMain.h"
+#include "maze.h"
+#include "cameraTracking.hpp"
+#include "character.hpp"
+
 #define WIDTH 41
 #define HEIGHT 21
+#define START_X 2
+#define START_Y 19
+#define END_X 39
+#define END_Y 19
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
 
 public:
     void setup();
@@ -24,19 +32,15 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    // Game variables
-    int current_posX, current_posY; //the player's current position coordinates (in maze)
-    int exit_posX, exit_posY; //the postion coordinates of the exit/goal
-    char maze[WIDTH][HEIGHT];
-
-    int mode; //level of difficulty which determines visibility
-    bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
-
+    bool game_started = false;
+    bool difficulty_chosen = false;
+    bool race_chosen = false;
+    
+    //Character player;
+    
     // Computer camera inputs
-    bool use_camera_input; //TRUE if player decides to use camera input to move; FALSE if otherwise and by default
+    bool USE_CAMERA_INPUT = false; //TRUE if player decides to use camera input to move; FALSE if otherwise and by default
     ofVideoGrabber comp_camera; // Computer Camera
-    int brightest_pixel_x; //X-coordinate of brightest pixel
-    int brightest_pixel_y; //Y-coordinate of brightest pixel
 
     // 3D view camera
     ofEasyCam view_camera;
