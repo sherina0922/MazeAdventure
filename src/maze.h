@@ -14,23 +14,27 @@
 #define WIDTH 41
 #define HEIGHT 21 
 #define CUBE_SIZE 5.0
+#define START_X 2
+#define START_Y 19
+#define END_X 39
+#define END_Y 19
+#define FULL_COLOR 255
 
-//static char maze_structure[WIDTH][HEIGHT];
-
-extern int current_posX, current_posY; //the player's current position coordinates (in maze)
-extern int exit_posX, exit_posY; //the postion coordinates of the exit/goal
-//extern char maze_structure[WIDTH][HEIGHT];
-extern int mode; //level of difficulty which determines visibility
-extern bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
+static char maze_structure[WIDTH][HEIGHT];
+static int current_posX, current_posY; //the player's current position coordinates (in maze)
+static int mode; //level of difficulty which determines visibility
+static bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
+static bool game_ended = false;
 
 class Maze {
     public :
     
-    static char maze_structure[WIDTH][HEIGHT];
-    
+    static void SetMode(int new_mode);
+    static void SetGameEnded(bool new_status);
     static void DrawMaze();
     static void MazeSetup();
     static void MazeKeyPressed(const char key);
+    
 };
 
 #endif 
