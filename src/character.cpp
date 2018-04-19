@@ -4,10 +4,8 @@
 //
 //  Created by Sherina Hung on 4/16/18.
 //
-/*
+///*
 #include "character.hpp"
-std::vector<CharacterType> character_list;
-std::vector<CharacterType> enemy_list;
 
 void Character::CharacterSetup() {
     character_list.push_back(CharacterType("Magician", 20, 15, 15)); //50
@@ -18,8 +16,7 @@ void Character::CharacterSetup() {
     enemy_list.push_back(CharacterType("Goblin", 30, 10, 10)); //50
     enemy_list.push_back(CharacterType("Thief", 25, 20, 10)); //55
     enemy_list.push_back(CharacterType("Vampire", 27, 18, 10)); //55
-    
-    
+
 }
 
 std::string Character::GenerateRaceMenuString() {
@@ -29,4 +26,4 @@ std::string Character::GenerateRaceMenuString() {
     }
     return result;
 }
- */
+ //*/
