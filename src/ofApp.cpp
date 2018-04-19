@@ -6,22 +6,23 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
     srand((unsigned)time(NULL));
+    ofSetFrameRate(60);
 
     ofSetVerticalSync(true);
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-    ofSetCircleResolution(40);
+    ofSetCircleResolution(50);
 
-    view_camera.setDistance(150); //150
+    view_camera.setDistance(150); //Initial Distance : 150
 
     //If using camera input
     comp_camera.initGrabber(1280, 720);
 
     Maze::MazeSetup();
     
-    current_posX = START_X;
-    current_posY = START_Y;
-    exit_posX = END_X;
-    exit_posY = END_Y;
+    // Button/Slider Setup || Derived from guiExample
+    gui.setup();
+    visilibility_slider.addListener(this, &ofApp::visibilitySliderChanged);
+    gui.add(visilibility_slider.setup("Visilibility", 1, 1, WIDTH)); //title, initial, min, max
     
     //Character::CharacterSetup();
 }
@@ -36,35 +37,28 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
     ofBackground(0,0,0);
+    gui.draw();
+    
     /*
-    if (!race_chosen) {
+    if (!race_chosen) { //Choosing character race settings
         ofDrawBitmapString(Character::GenerateRaceMenuString(), ofGetScreenWidth() / 2, ofGetScreenHeight() / 2);
-    }
-    if (!difficulty_chosen) {
-        std::string difficulty_options = "1. Easy\n2. Medium\n3. Difficult";
-        ofDrawBitmapString(difficulty_options, ofGetScreenWidth() / 2, ofGetScreenHeight() / 2);
-    }
-    if (!game_started) {
-        //ofDrawBitmapString(<#const T &textString#>, <#float x#>, <#float y#>);
-    } else { */
-        view_camera.begin();
 
-        //Draws the maze
-    Maze::DrawMaze();
+    } */
+    //else {
+        view_camera.begin(); //perspective camera
+
+        Maze::DrawMaze(); //draws maze and player cubes
 
         if (USE_CAMERA_INPUT) {
             CameraTracking::DrawStylus(comp_camera.getWidth(), comp_camera.getHeight());
         }
         view_camera.end();
-    //}
 
+    //} //commented out else bracket
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-    if (key > 0 && key < 4) {
-        
-    }
     switch (key) {
         case 'c':
             //Use camera movement input
@@ -94,8 +88,12 @@ void ofApp::keyPressed(int key) {
 }
 
 //--------------------------------------------------------------
+void ofApp::visibilitySliderChanged(int &visilibility_slider){
+    Maze::SetMode(visilibility_slider);
+    Maze::DrawMaze();
+}
+//--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
-
 }
 
 //--------------------------------------------------------------
