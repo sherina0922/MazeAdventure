@@ -4,7 +4,7 @@
 //
 //  Created by Sherina Hung on 4/16/18.
 //
-/*
+///*
 #pragma once
 #include <stdio.h>
 #include <iostream>
@@ -19,8 +19,8 @@ struct CharacterType {
     CharacterType(std::string temp_name, double temp_health, double temp_attack, double temp_defense);
 };
 
-extern std::vector<CharacterType> character_list;
-extern std::vector<CharacterType> enemy_list;
+static std::vector<CharacterType> character_list;
+static std::vector<CharacterType> enemy_list;
 
 
 class Character {
@@ -28,8 +28,6 @@ public:
     
     static void CharacterSetup();
     static std::string GenerateRaceMenuString();
-    
-    
-    
+  
 };
-*/
+//*/
