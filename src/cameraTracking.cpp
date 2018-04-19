@@ -7,9 +7,6 @@
 
 #include "cameraTracking.hpp"
 
-int brightest_pixel_x; //X-coordinate of brightest pixel
-int brightest_pixel_y; //Y-coordinate of brightest pixel
-
 void CameraTracking::FindPoint(ofVideoGrabber camera) {
     int camera_width = camera.getWidth();
     int camera_height = camera.getHeight();
@@ -32,7 +29,6 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
                 brightest_pixel_x = current_x;
                 brightest_pixel_y = current_y;
             }
-            
             /* //Make it track green... but doesnt work
              ofColor current_color = comp_camera.getPixels().getColor(current_posX, current_posY);
              float hue = current_color.getHue();
@@ -52,16 +48,19 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
 
 void CameraTracking::DrawStylus(int width, int height) {
     //comp_camera.draw(0, 0, ofGetWidth(), ofGetWidth());
+    
     //draws brightest point stylus, position needs to be rescaled to deal with easycam changes...
     ofPushMatrix();
+    
     //ofTranslate(comp_camera.getWidth()/2,comp_camera.getHeight()/2,0); //centers the coordinates plane
     //ofTranslate(comp_camera.getWidth()/(2*view_camera.getDistance()), comp_camera.getHeight()/(2*view_camera.getDistance()), 0);
-    ofSetColor(255, 255, 255); //white
+    
+    ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //white
     ofNoFill();
-    ofDrawCircle(-0.5*(brightest_pixel_x - width/2), -0.5*(brightest_pixel_y - height/2), 5);
+    ofDrawCircle(-0.5 * (brightest_pixel_x - width / 2), -0.5 * (brightest_pixel_y - height / 2), 5);
     ofFill();
-    ofDrawCircle(-0.5*(brightest_pixel_x - width/2), -0.5*(brightest_pixel_y - height/2), 2);
+    ofDrawCircle(-0.5 * (brightest_pixel_x - width / 2), -0.5 * (brightest_pixel_y - height / 2), 2);
     ofPopMatrix();
     
-    ofDrawBitmapString("the current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y), 10, 20);
+    ofDrawBitmapString("the current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y), 10, 30);
 }
