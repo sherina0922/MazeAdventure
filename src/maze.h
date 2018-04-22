@@ -14,17 +14,16 @@
 #define WIDTH 41
 #define HEIGHT 21 
 #define CUBE_SIZE 5.0
-#define START_X 2
-#define START_Y 19
-#define END_X 39
-#define END_Y 19
 #define FULL_COLOR 255
 
 class Maze {
     public :
     
-    char maze_structure[WIDTH][HEIGHT];
+    char maze_structure[WIDTH][HEIGHT]; //need to make vector so can change size
+    char time_maze_structure[21][21];
     int current_posX, current_posY; //the player's current position coordinates (in maze)
+    int start_x, start_y;
+    int end_x, end_y;
     int mode; //level of difficulty which determines visibility
     bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
     bool game_ended = false;

@@ -7,7 +7,7 @@
 
 #include "timer.hpp"
 
-const float MAX_TIME = 15000.0;
+const float MAX_TIME = 150000.0;
 
 void Timer::TimerSetup() {
     // Timed mode setup
@@ -36,10 +36,17 @@ void Timer::DrawTimedMode() {
 }
 
 void Timer::ModeVisualsKeyPressed(int key) {
-    if (key == ' ') {
+    switch (key) {
+    case 'r':
         timer_end = false; //reset timer
         start_time = ofGetElapsedTimeMillis();
+        break;
+        
+    case 'p':
+        //PAUSE TIMER
+        break;
     }
+    
 }
 
 void Timer::SetStartTime() {

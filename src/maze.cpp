@@ -59,7 +59,7 @@ void Maze::DrawMaze() {
     
     //draw goal box
     ofPushMatrix();
-    ofTranslate(END_X * CUBE_SIZE - 100, -END_Y * CUBE_SIZE + 50,0);
+    ofTranslate(end_x * CUBE_SIZE - 100, -end_y * CUBE_SIZE + 50,0);
     ofSetColor(0.0,FULL_COLOR,0.0); //Set to GREEN
     ofFill();
     ofDrawBox(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE);
@@ -73,7 +73,7 @@ void Maze::MazeSetup() {
     //Maze setup: Maze below derived from https://www.youtube.com/watch?v=9Ozu-B2HLY4  make as file and read
     //make maze generator??? decrease visibility as player goes through more mazes???
 
-    unsigned char maze_template[HEIGHT][WIDTH] = {
+    unsigned char adventure_maze_template[HEIGHT][WIDTH] = {
         {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
         {'#',' ',' ',' ','#',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
         {'#','#','#',' ','#','#','#',' ','#',' ','#',' ','#','#','#',' ','#','#','#',' ','#','#','#','#','#',' ','#',' ','#',' ','#','#','#','#','#','#','#',' ','#',' ','#'},
@@ -93,20 +93,27 @@ void Maze::MazeSetup() {
         {'#',' ','#',' ','#','#','#',' ','#',' ','#','#','#','#','#','#','#','#','#','#','#',' ','#',' ','#','#','#',' ','#',' ','#',' ','#','#','#',' ','#','#','#',' ','#'},
         {'#',' ','#',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ','#',' ','#',' ',' ',' ','#',' ',' ',' ',' ',' ','#'},
         {'#',' ','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#',' ','#',' ','#','#','#','#','#','#','#',' ','#','#','#','#','#','#','#'},
-        {'#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'}, //E was right before # symbol
+        {'#','S',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','E','#'},
         {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
         
     };
     
-    for(int y = 0 ; y < HEIGHT ; y++){
-        for(int x = 0 ; x < WIDTH ; x++){
-            maze_structure[x][y] = maze_template[y][x];
+    for (int y = 0 ; y < HEIGHT ; y++) {
+        for (int x = 0 ; x < WIDTH ; x++) {
+            maze_structure[x][y] = adventure_maze_template[y][x];
+            if (adventure_maze_template[y][x] == 'S') {
+                start_x = x;
+                start_y = y;
+            } else if (adventure_maze_template[y][x] == 'E') {
+                end_x = x;
+                end_y = y;
+            }
         }
     }
     
     //Hard set current position and exit position
-    current_posX = START_X;
-    current_posY = START_Y;
+    current_posX = start_x;
+    current_posY = start_y;
 }
 
 void Maze::MazeKeyPressed(const char key) {
@@ -156,7 +163,7 @@ void Maze::MazeKeyPressed(const char key) {
             
     }
     //check if game ended
-    if (current_posX == END_X && current_posY == END_Y) {
+    if (current_posX == end_x && current_posY == end_y) {
         Maze::SetGameEnded(true);
     }
 }
@@ -216,7 +223,7 @@ void Maze::CameraMovePosition(int camera_current_x, int camera_current_y) {
         }
     }
     //check if game ended
-    if (current_posX == END_X && current_posY == END_Y) {
+    if (current_posX == end_x && current_posY == end_y) {
         Maze::SetGameEnded(true);
     }
 }

@@ -98,7 +98,8 @@ void ofApp::keyPressed(int key) {
             ofToggleFullscreen();
             break;
             
-        case ' ':
+        case 'r': //reset timer
+        case 'p': //pause timer
             current_timer.ModeVisualsKeyPressed(key);
             break;
             
@@ -113,7 +114,7 @@ void ofApp::keyPressed(int key) {
             if (!game_mode_chosen) {
                 GAME_MODE_TIME = true;
                 game_mode_chosen = true;
-                current_timer.ModeVisualsKeyPressed(' ');
+                current_timer.ModeVisualsKeyPressed('r');
             }
             break;
             
