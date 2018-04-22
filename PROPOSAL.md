@@ -10,31 +10,25 @@ I might attempt to visualize the maze with 3D boxes so the user can drag the scr
 
 ### Possible Libraries
 
-I'm not quite sure exactly which libraries I will end up using but for now...
 - ofBitmapFont -> to print out messages
 - ofEasyCam -> to allow for different viewing angles of the maze/game -> can reference the ofEasyCam project from OF Examples
 - of3dPrimitives (ofBoxPrimitive) -> to make maze/player boxes -> can reference the of3dPrimitives project from OF Examples
-- ofxOpenCV
+
+### Basic Goals
+- Timer aspect
+- Movement with camera input (tracking brightness) and WASD keyboard input
+- 3D Maze view with EasyCam
+
+### Stretch Goals
+- Different game modes
+  - Time Crunch (beat as many mazes within time limit)
+  - Free mode (includes battles with "monsters" with no time limit and custom visibility settings)
+- Maze generating algorithm
+- Change camera input to hand tracking instead of brightness tracking
 
 ### Outside Resources
 
 - [OpenFrameworks Youtube tutorials](https://www.youtube.com/playlist?list=PL4neAtv21WOmrV8z9rSzL20QpdLU1zJLr) 
 - [Game Idea Source](https://www.youtube.com/watch?v=9Ozu-B2HLY4)
 - Snake Game for basic game flow, controls
-
-## Idea 2
-
-### Basic Summary
-
-I wanted to create an application like "Paint" in which the user can draw things with different colors and save their work. To make it more interesting, I want to add a "Camera mode" in which the user uses a bright object as the stylus and the camera tracks that bright object to draw things. Regular drawing with the mouse should still work as usual.
-/
-### Possible Libraries and References
-
-- ofxOpenCv -> use to access computer camera
-- ofPoint
-
-
-### Outside Resources
-
-- [OpenFrameworks Youtube tutorials](https://www.youtube.com/playlist?list=PL4neAtv21WOmrV8z9rSzL20QpdLU1zJLr) 
 
