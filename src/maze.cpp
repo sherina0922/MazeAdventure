@@ -70,7 +70,9 @@ void Maze::DrawMaze() {
 }
 
 void Maze::MazeSetup() {
-    //Maze setup: Maze below derived from https://www.youtube.com/watch?v=9Ozu-B2HLY4
+    //Maze setup: Maze below derived from https://www.youtube.com/watch?v=9Ozu-B2HLY4  make as file and read
+    //make maze generator??? decrease visibility as player goes through more mazes???
+
     unsigned char maze_template[HEIGHT][WIDTH] = {
         {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
         {'#',' ',' ',' ','#',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
@@ -155,6 +157,62 @@ void Maze::MazeKeyPressed(const char key) {
     }
     if (current_posX == END_X && current_posY == END_Y) {
         Maze::SetGameEnded(true);
+    }
+}
+
+void Maze::CameraMovePosition(int camera_current_x, int camera_current_y) {
+    if (camera_current_x == 0 && camera_current_y == 0
+        || std::abs(camera_current_x) > 100 || std::abs(camera_current_y) > 100) {
+        return;
+    }
+    /*
+    float pixel_slope = std::abs(std::atan(camera_current_y / camera_current_x));
+    if (pixel_slope >= 0 && pixel_slope <= 1) {
+        if (camera_current_x > 0) {
+            if (maze_structure[current_posX + 1][current_posY] != '#') {
+                current_posX++;
+            }
+        } else {
+            if (maze_structure[current_posX - 1][current_posY] != '#') {
+                current_posX--;
+            }
+        }
+    } else {
+        if (camera_current_y > 0) {
+            if (maze_structure[current_posX][current_posY + 1] != '#') {
+                current_posY++;
+            }
+        } else {
+            if (maze_structure[current_posX][current_posY - 1] != '#') {
+                current_posY--;
+            }
+        }
+    }
+     */
+    if (camera_current_x > 0) {
+        if (camera_current_y > 0) {
+            //Move up
+            if (maze_structure[current_posX][current_posY - 1] != '#') {
+                current_posY--;
+            }
+        } else {
+            //Move right
+            if (maze_structure[current_posX + 1][current_posY] != '#') {
+                current_posX++;
+            }
+        }
+    } else {
+        if (camera_current_y > 0) {
+            //Move down
+            if (maze_structure[current_posX][current_posY + 1] != '#') {
+                current_posY++;
+            }
+        } else {
+            //Move left
+            if (maze_structure[current_posX - 1][current_posY] != '#') {
+                current_posX--;
+            }
+        }
     }
 }
 
