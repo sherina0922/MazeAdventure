@@ -5,9 +5,16 @@
 //  Created by Sherina Hung on 4/15/18.
 //
 
-#include "cameraTracking.hpp"
+#include "../src/cameraTracking.hpp"
+
+
+CameraTracking::CameraTracking() {
+    brightest_pixel_x = 0;
+    brightest_pixel_y = 0;
+}
 
 void CameraTracking::FindPoint(ofVideoGrabber camera) {
+
     int camera_width = camera.getWidth();
     int camera_height = camera.getHeight();
     
@@ -44,6 +51,7 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
         }
     }
     camera.update();
+    
 }
 
 void CameraTracking::DrawStylus(int width, int height) {
@@ -55,6 +63,22 @@ void CameraTracking::DrawStylus(int width, int height) {
     //ofTranslate(comp_camera.getWidth()/2,comp_camera.getHeight()/2,0); //centers the coordinates plane
     //ofTranslate(comp_camera.getWidth()/(2*view_camera.getDistance()), comp_camera.getHeight()/(2*view_camera.getDistance()), 0);
     
+    CameraTracking::ConvertPixelLocation(width, height);
+    
+    ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //white
+    ofNoFill();
+    ofDrawCircle(brightest_pixel_x, brightest_pixel_y, 5);
+    ofFill();
+    ofDrawCircle(brightest_pixel_x, brightest_pixel_y, 2);
+    ofPopMatrix();
+    
+    ofDrawBitmapString("the current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y), 10, 30);
+}
+
+void CameraTracking::ConvertPixelLocation(int width, int height) {
+    brightest_pixel_x = -0.5 * (brightest_pixel_x - width / 2);
+    brightest_pixel_y = -0.5 * (brightest_pixel_y - height / 2);
+
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //white
     ofNoFill();
     ofDrawCircle(-0.5 * (brightest_pixel_x - width / 2), -0.5 * (brightest_pixel_y - height / 2), 5);
