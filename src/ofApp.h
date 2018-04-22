@@ -44,10 +44,12 @@ public:
     
     // Computer camera inputs
     bool USE_CAMERA_INPUT = false; //TRUE if player decides to use camera input to move; FALSE if otherwise and by default
+    CameraTracking comp_tracking;
     ofVideoGrabber comp_camera; // Computer Camera
 
     // 3D view camera
     ofEasyCam view_camera;
+    Maze current_maze;
 
 
 };
