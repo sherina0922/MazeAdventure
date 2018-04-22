@@ -17,7 +17,7 @@ void ofApp::setup() {
     //If using camera input
     comp_camera.initGrabber(1280, 720);
 
-    Maze::MazeSetup();
+    current_maze.MazeSetup();
     
     // Button/Slider Setup || Derived from guiExample
     gui.setup();
@@ -30,7 +30,8 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update() {
     if (USE_CAMERA_INPUT) {
-        CameraTracking::FindPoint(comp_camera);
+        comp_tracking.FindPoint(comp_camera);
+        //current_maze.CameraMovePosition(comp_tracking.brightest_pixel_x, comp_tracking.brightest_pixel_y);
     }
 }
 
@@ -46,11 +47,14 @@ void ofApp::draw() {
     } */
     //else {
         view_camera.begin(); //perspective camera
+        current_maze.DrawMaze(); //draws maze and player cubes
 
-        Maze::DrawMaze(); //draws maze and player cubes
+
+        current_maze.DrawMaze(); //draws maze and player cubes
 
         if (USE_CAMERA_INPUT) {
-            CameraTracking::DrawStylus(comp_camera.getWidth(), comp_camera.getHeight());
+            comp_tracking.DrawStylus(comp_camera.getWidth(), comp_camera.getHeight());
+            current_maze.CameraMovePosition(comp_tracking.brightest_pixel_x, comp_tracking.brightest_pixel_y);
         }
         view_camera.end();
 
@@ -74,7 +78,7 @@ void ofApp::keyPressed(int key) {
         case 'a':
         case 's':
         case 'd':
-            Maze::MazeKeyPressed(key);
+            current_maze.MazeKeyPressed(key);
             break;
             
         case 'f':
@@ -89,8 +93,11 @@ void ofApp::keyPressed(int key) {
 
 //--------------------------------------------------------------
 void ofApp::visibilitySliderChanged(int &visilibility_slider){
-    Maze::SetMode(visilibility_slider);
-    Maze::DrawMaze();
+    current_maze.SetMode(visilibility_slider);
+    current_maze.DrawMaze();
+    
+    current_maze.SetMode(visilibility_slider);
+    current_maze.DrawMaze();
 }
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
