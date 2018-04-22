@@ -22,7 +22,6 @@ struct CharacterType {
 static std::vector<CharacterType> character_list;
 static std::vector<CharacterType> enemy_list;
 
-
 class Character {
 public:
     

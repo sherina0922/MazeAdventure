@@ -21,8 +21,6 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
     float current_max_brightness = 0.0;
     brightest_pixel_x = 0;
     brightest_pixel_y = 0;
-    
-    //ofColor current_color;
     float checking_brightness = 0;
     
     //find coordinate location of brightest pixel
@@ -78,13 +76,4 @@ void CameraTracking::DrawStylus(int width, int height) {
 void CameraTracking::ConvertPixelLocation(int width, int height) {
     brightest_pixel_x = -0.5 * (brightest_pixel_x - width / 2);
     brightest_pixel_y = -0.5 * (brightest_pixel_y - height / 2);
-
-    ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //white
-    ofNoFill();
-    ofDrawCircle(-0.5 * (brightest_pixel_x - width / 2), -0.5 * (brightest_pixel_y - height / 2), 5);
-    ofFill();
-    ofDrawCircle(-0.5 * (brightest_pixel_x - width / 2), -0.5 * (brightest_pixel_y - height / 2), 2);
-    ofPopMatrix();
-    
-    ofDrawBitmapString("the current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y), 10, 30);
 }

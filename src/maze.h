@@ -20,13 +20,6 @@
 #define END_Y 19
 #define FULL_COLOR 255
 
-/*
-static char maze_structure[WIDTH][HEIGHT];
-static int current_posX, current_posY; //the player's current position coordinates (in maze)
-static int mode; //level of difficulty which determines visibility
-static bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
-static bool game_ended = false;
- */
 class Maze {
     public :
     

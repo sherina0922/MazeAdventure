@@ -155,6 +155,7 @@ void Maze::MazeKeyPressed(const char key) {
             break; */
             
     }
+    //check if game ended
     if (current_posX == END_X && current_posY == END_Y) {
         Maze::SetGameEnded(true);
     }
@@ -213,6 +214,10 @@ void Maze::CameraMovePosition(int camera_current_x, int camera_current_y) {
                 current_posX--;
             }
         }
+    }
+    //check if game ended
+    if (current_posX == END_X && current_posY == END_Y) {
+        Maze::SetGameEnded(true);
     }
 }
 
