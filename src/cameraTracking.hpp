@@ -10,13 +10,14 @@
 #include <stdio.h>
 #define FULL_COLOR 255
 
-static int brightest_pixel_x; //X-coordinate of brightest pixel
-static int brightest_pixel_y; //Y-coordinate of brightest pixel
-
 class CameraTracking {
+
 public:
-    
-    static void FindPoint(ofVideoGrabber camera);
-    static void DrawStylus(int width, int height);
+    CameraTracking();
+    int brightest_pixel_x; //X-coordinate of brightest pixel
+    int brightest_pixel_y; //Y-coordinate of brightest pixel
+    void FindPoint(ofVideoGrabber camera); 
+    void DrawStylus(int width, int height);
+    void ConvertPixelLocation(int width, int height);
 };
 
