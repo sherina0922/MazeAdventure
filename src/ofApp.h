@@ -3,14 +3,11 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include "maze.h"
+#include "maze.hpp"
 #include "cameraTracking.hpp"
 #include "character.hpp"
 #include "timer.hpp"
 #include "../../../../../Applications/of_v0.9.8_osx_release/addons/ofxGui/src/ofxButton.h"
-
-#define WIDTH 41
-#define HEIGHT 21
 
 class ofApp : public ofBaseApp {
 
@@ -35,11 +32,13 @@ public:
     
     bool game_started = false;
     bool difficulty_chosen = false;
-    bool race_chosen = false;
+    bool character_type_chosen = false;
     
     bool game_mode_chosen = false;
+    
     bool GAME_MODE_FREE = false; // TRUE if player decides to play free game mode (has battling)
     bool GAME_MODE_TIME = false; // TRUE if player decides to play time mode (has timer and maze generator)
+     
     
     Timer current_timer;
     
@@ -48,6 +47,7 @@ public:
     ofxIntSlider visilibility_slider;
     ofxButton difficulty_button;
     ofxButton race_button;
+    Character player;
     
     /*
     //Timed mode variables

@@ -1,10 +1,3 @@
-//
-//  cameraTracking.cpp
-//  final-project-sherina0922-master
-//
-//  Created by Sherina Hung on 4/15/18.
-//
-
 #include "../src/cameraTracking.hpp"
 
 
@@ -13,8 +6,9 @@ CameraTracking::CameraTracking() {
     brightest_pixel_y = 0;
 }
 
+//--------------------------------------------------------------
 void CameraTracking::FindPoint(ofVideoGrabber camera) {
-
+    
     int camera_width = camera.getWidth();
     int camera_height = camera.getHeight();
     
@@ -27,7 +21,8 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
     for (int current_y = 0; current_y < camera_height; current_y++) {
         for (int current_x = 0; current_x < camera_width; current_x++) {
             
-            checking_brightness = camera.getPixels().getColor(current_x, current_y).getBrightness(); //get brightness at current pixel
+            checking_brightness = camera.getPixels().getColor(current_x,
+                                                              current_y).getBrightness(); //get brightness at current pixel
             
             if (checking_brightness > current_max_brightness) {
                 current_max_brightness = checking_brightness;
@@ -52,6 +47,7 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
     
 }
 
+//--------------------------------------------------------------
 void CameraTracking::DrawStylus(int width, int height) {
     //comp_camera.draw(0, 0, ofGetWidth(), ofGetWidth());
     
@@ -70,9 +66,12 @@ void CameraTracking::DrawStylus(int width, int height) {
     ofDrawCircle(brightest_pixel_x, brightest_pixel_y, 2);
     ofPopMatrix();
     
-    ofDrawBitmapString("the current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y), 10, 30);
+    ofDrawBitmapString(
+                       "the current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y),
+                       10, 30);
 }
 
+//--------------------------------------------------------------
 void CameraTracking::ConvertPixelLocation(int width, int height) {
     brightest_pixel_x = -0.5 * (brightest_pixel_x - width / 2);
     brightest_pixel_y = -0.5 * (brightest_pixel_y - height / 2);

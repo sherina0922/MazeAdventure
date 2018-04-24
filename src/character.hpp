@@ -6,27 +6,51 @@
 //
 ///*
 #pragma once
+
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include "ofMain.h"
 
-struct CharacterType {
-    std::string name;
-    double health;
-    double attack;
-    double defense;
-    bool isDead = false;
-    CharacterType(std::string temp_name, double temp_health, double temp_attack, double temp_defense);
-};
+#include "constants.cpp"
 
-static std::vector<CharacterType> character_list;
-static std::vector<CharacterType> enemy_list;
 
 class Character {
-public:
     
-    static void CharacterSetup();
-    static std::string GenerateRaceMenuString();
+public:
+    struct CharacterType {
+        std::string name;
+        double health;
+        double attack;
+        double defense;
+        bool isDead = false;
+        CharacterType() {
+            name = "";
+            health = 0;
+            attack = 0;
+            defense = 0;
+            isDead = false;
+        };
+        CharacterType(std::string temp_name, double temp_health, double temp_attack, double temp_defense) {
+            name = temp_name;
+            health = temp_health;
+            defense = temp_defense;
+            isDead = false;
+        };
+    };
+    
+    //Character();
+    CharacterType player_stats;
+    
+    std::vector<CharacterType> character_list;
+    std::vector<CharacterType> enemy_list;
+    
+    void CharacterSetup();
+    std::string GenerateRaceMenuString();
+    
+    void ChooseCharacterType();
+    void CharacterKeyPressed(int key);
+    void DrawCharacterStats();
   
 };
 //*/

@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include "ofMain.h"
 #include "ofxGui.h"
-#include "maze.h"
+#include "maze.hpp"
+
+#include "constants.cpp"
 
 class Timer {
 public:
@@ -21,11 +23,14 @@ public:
     ofxPanel time_gui;
     //ofParameter<float> end_time;
     ofxFloatSlider time_slider;
+    //int number_completed = 0;
+    bool timer_paused = false;
+    float time_remaining;
     
     void TimerSetup();
     void DrawTimedMode();
     void ModeVisualsKeyPressed(int key);
-    void SetStartTime();
+    void SetStartTime(float time);
     
 };
 

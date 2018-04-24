@@ -6,15 +6,15 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
     //srand((unsigned)time(NULL));
-    ofSetFrameRate(60);
-
+    ofSetFrameRate(frame_rate);
+    
     ofSetVerticalSync(true);
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     ofSetCircleResolution(50);
-
-    view_camera.setDistance(150); //Initial Distance : 150
+    
+    view_camera.setDistance(initial_cam_distance); //Initial Distance : 150
     comp_camera.initGrabber(1280, 720);
-    current_maze.MazeSetup();
+    current_maze.FreeMazeSetup();
     
     current_timer.TimerSetup();
     
@@ -22,13 +22,8 @@ void ofApp::setup() {
     free_gui.setup();
     visilibility_slider.addListener(this, &ofApp::visibilitySliderChanged);
     free_gui.add(visilibility_slider.setup("Visilibility", 1, 1, WIDTH)); //title, initial, min, max
-    /*
-    // Timed mode setup
-    timer_end = false;
-    start_time = ofGetElapsedTimef();
-     */
     
-    //Character::CharacterSetup();
+    player.CharacterSetup();
 }
 
 //--------------------------------------------------------------
@@ -40,25 +35,20 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-    ofBackground(0,0,0);
-
+    ofBackground(0, 0, 0);
+    
     if (!game_mode_chosen) {
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("1. Free mode\n2. Timed mode", ofGetScreenWidth() / 2, ofGetScreenHeight() / 2);
+        ofDrawBitmapString("1. Free mode\n2. Timed mode", ofGetWidth() / 2, ofGetHeight() / 2);
         return;
     }
     if (GAME_MODE_FREE) {
-        /*if (!race_chosen) { //Choosing character race settings
-            ofDrawBitmapString(Character::GenerateRaceMenuString(), ofGetScreenWidth() / 2, ofGetScreenHeight() / 2);
-            return;
-        } */
+        if (!character_type_chosen) { //Choosing character race settings
+            player.ChooseCharacterType();
+         return;
+         }
         free_gui.draw();
-    }
-    
-    if (GAME_MODE_TIME) {
-        //setup timer here
-        //if time is not up, continue to draw the maze and regenerate if needed
-        current_timer.DrawTimedMode();
+        player.DrawCharacterStats();
     }
     
     view_camera.begin(); //perspective camera
@@ -70,16 +60,41 @@ void ofApp::draw() {
     }
     
     view_camera.end();
-     
+    
+    if (GAME_MODE_TIME) {
+        //setup timer here
+        //if time is not up, continue to draw the maze and regenerate if needed
+        current_timer.DrawTimedMode();
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+    if (game_mode_chosen && GAME_MODE_FREE && !character_type_chosen) {
+        switch (key) {
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+                player.CharacterKeyPressed(key);
+                character_type_chosen = true;
+                return;
+                
+            default:
+                break;
+        }
+    }
     switch (key) {
+        case 'r': //reset entire game
+            game_mode_chosen = GAME_MODE_FREE = GAME_MODE_TIME = false;
+            USE_CAMERA_INPUT = false;
+            setup();
+            break;
+            
         case 'c':
             //Use camera movement input
-            USE_CAMERA_INPUT  = !USE_CAMERA_INPUT;
-            view_camera.setDistance(150);
+            USE_CAMERA_INPUT = !USE_CAMERA_INPUT;
+            view_camera.setDistance(initial_cam_distance);
             if (view_camera.getMouseInputEnabled()) //ofEasyCam camera movement, lock or unlock model movement
                 view_camera.disableMouseInput();
             else
@@ -98,7 +113,7 @@ void ofApp::keyPressed(int key) {
             ofToggleFullscreen();
             break;
             
-        case 'r': //reset timer
+        case 't': //reset timer
         case 'p': //pause timer
             current_timer.ModeVisualsKeyPressed(key);
             break;
@@ -107,6 +122,7 @@ void ofApp::keyPressed(int key) {
             if (!game_mode_chosen) {
                 GAME_MODE_FREE = true;
                 game_mode_chosen = true;
+                current_maze.FreeMazeSetup();
             }
             break;
             
@@ -114,6 +130,8 @@ void ofApp::keyPressed(int key) {
             if (!game_mode_chosen) {
                 GAME_MODE_TIME = true;
                 game_mode_chosen = true;
+                current_maze.SetMode(SIZE);
+                current_maze.TimeMazeSetup();
                 current_timer.ModeVisualsKeyPressed('r');
             }
             break;
@@ -124,7 +142,7 @@ void ofApp::keyPressed(int key) {
 }
 
 //--------------------------------------------------------------
-void ofApp::visibilitySliderChanged(int &visilibility_slider){
+void ofApp::visibilitySliderChanged(int &visilibility_slider) {
     current_maze.SetMode(visilibility_slider);
     current_maze.DrawMaze();
     
@@ -137,46 +155,46 @@ void ofApp::keyReleased(int key) {
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ) {
-
+void ofApp::mouseMoved(int x, int y) {
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseEntered(int x, int y) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseExited(int x, int y) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {
-
+    
 }

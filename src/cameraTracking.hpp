@@ -8,7 +8,8 @@
 #pragma once
 #include "ofMain.h"
 #include <stdio.h>
-#define FULL_COLOR 255
+
+#include "constants.cpp"
 
 class CameraTracking {
 

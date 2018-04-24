@@ -9,12 +9,18 @@
 #define mazeGenerator_hpp
 
 #include <stdio.h>
+#include <iostream>
+#include <ctime>
+#include <stack>
+#include <fstream>
+#include <vector>
+
+#include "constants.cpp"
 /********************************
  * USED FOR THE SIZE OF THE MAZE *
  *   Must be an odd number for   *
  *    maze traversal reasons     *
  ********************************/
-#define SIZE 21
 
 // CELL STRUCTURE
 struct Cell
@@ -28,11 +34,13 @@ struct Cell
 };
 
 // FUNCTION DECLARATIONS
-void GenerateNewMaze();
+void PopulateNewMaze();
 void Initialize(Cell Level[][SIZE]);
 void Redraw(Cell Level[][SIZE]);
 void GenerateMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goalY);
 void SaveMaze(Cell Level[][SIZE]);
 bool MazeValid(Cell check_maze[][SIZE]);
+std::string GetFileContents();
+
 
 #endif /* mazeGenerator_hpp */

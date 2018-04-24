@@ -6,14 +6,11 @@
 //
 
 #include "mazeGenerator.hpp"
-#include <iostream>
-#include <ctime>
-#include <stack>
-#include <fstream>
-//#include "stdafx.h" //http://sourceforge.net/p/wpbdc/website/ci/master/tree/Judge/StdAfx.h
 
+//#include "stdafx.h" //http://sourceforge.net/p/wpbdc/website/ci/master/tree/Judge/StdAfx.h
+//--------------------------------------------------------------
 // MAIN
-void GenerateNewMaze() {
+void PopulateNewMaze() {
     Cell new_maze[SIZE][SIZE];
     int posX = 0;
     int posY = 0;
@@ -30,8 +27,8 @@ void GenerateNewMaze() {
 
 // INITIALIZE MAZE
 void Initialize(Cell Level[][SIZE]) {
-    for(int i = 0; i < SIZE; i++) {
-        for(int j = 0; j < SIZE; j++) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
             Level[i][j].value = '#';
             Level[i][j].visited = false;
             Level[i][j].top_wall = true;
@@ -40,8 +37,8 @@ void Initialize(Cell Level[][SIZE]) {
             Level[i][j].right_wall = true;
         }
     }
-    for(int i = 1; i < SIZE - 1; i++) {
-        for(int j = 1; j < SIZE - 1; j++) {
+    for (int i = 1; i < SIZE - 1; i++) {
+        for (int j = 1; j < SIZE - 1; j++) {
             // Border Cells have fewer accessible walls
             Level[1][j].top_wall = false;
             Level[SIZE - 2][j].bot_wall = false;
@@ -63,19 +60,19 @@ void Initialize(Cell Level[][SIZE]) {
  }*/
 
 /*
-// REDRAW MAZE
-void Redraw(Cell Level[][SIZE]) {
-    for(int i = 0; i < SIZE; i++) {
-        std::cout << std::endl;
-        for(int j = 0; j < SIZE; j++)
-            std::cout << " " << Level[i][j].value;
-    }
-}
-*/
-
+ // REDRAW MAZE
+ void Redraw(Cell Level[][SIZE]) {
+ for(int i = 0; i < SIZE; i++) {
+ std::cout << std::endl;
+ for(int j = 0; j < SIZE; j++)
+ std::cout << " " << Level[i][j].value;
+ }
+ }
+ */
+//--------------------------------------------------------------
 // GENERATE MAZE
 void GenerateMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goalY) {
-    srand((unsigned)time(NULL));    // Pick random start cell
+    srand((unsigned) time(NULL));    // Pick random start cell
     int random = 0;
     int randomX = ((2 * rand()) + 1) % (SIZE - 1);  // Generate a random odd number between 1 and SIZE
     int randomY = ((2 * rand()) + 1) % (SIZE - 1);  // Generate a random odd number between 1 and SIZE
@@ -89,121 +86,123 @@ void GenerateMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goa
     Level[randomY][randomX].value = 'S';    // Set S as the start cell
     Level[randomY][randomX].visited = true; // Set start cell as visited;
     
-    while(visitedCells < totalCells)
-    {
-        if(((Level[randomY - 2][randomX].visited == false) && (Level[randomY][randomX].top_wall == true && Level[randomY - 2][randomX].bot_wall == true)) ||
-           ((Level[randomY + 2][randomX].visited == false) && (Level[randomY][randomX].bot_wall == true && Level[randomY + 2][randomX].top_wall == true)) ||
-           ((Level[randomY][randomX - 2].visited == false) && (Level[randomY][randomX].left_wall == true && Level[randomY][randomX - 2].right_wall == true)) ||
-           ((Level[randomY][randomX + 2].visited == false) && (Level[randomY][randomX].right_wall == true && Level[randomY][randomX + 2].left_wall == true)))
-        {
-            random = (rand() % 4) + 1;              // Pick a random wall 1-4 to knock down
-            
-            // GO UP
-            if((random == 1) && (randomY > 1)) {
-                if(Level[randomY - 2][randomX].visited == false) {        // If not visited
-                    Level[randomY - 1][randomX].value = ' ';        // Delete display
-                    Level[randomY - 1][randomX].visited = true;       // Mark cell as visited
-                    Level[randomY][randomX].top_wall = false;       // Knock down wall
-                    
-                    back_trackX.push(randomX);                      // Push X for back track
-                    back_trackY.push(randomY);                      // Push Y for back track
-                    
-                    randomY -= 2;                                   // Move to next cell
-                    Level[randomY][randomX].visited = true;         // Mark cell moved to as visited
-                    Level[randomY][randomX].value = ' ';          // Update path
-                    Level[randomY][randomX].bot_wall = false;       // Knock down wall
-                    visitedCells++;                                 // Increase visitedCells counter
+    while (visitedCells < totalCells) {
+        if (((Level[randomY - 2][randomX].visited == false) &&
+             (Level[randomY][randomX].top_wall == true && Level[randomY - 2][randomX].bot_wall == true)) ||
+            ((Level[randomY + 2][randomX].visited == false) &&
+             (Level[randomY][randomX].bot_wall == true && Level[randomY + 2][randomX].top_wall == true)) ||
+            ((Level[randomY][randomX - 2].visited == false) &&
+             (Level[randomY][randomX].left_wall == true && Level[randomY][randomX - 2].right_wall == true)) ||
+            ((Level[randomY][randomX + 2].visited == false) &&
+             (Level[randomY][randomX].right_wall == true && Level[randomY][randomX + 2].left_wall == true))) {
+                random = (rand() % 4) + 1;              // Pick a random wall 1-4 to knock down
+                
+                // GO UP
+                if ((random == 1) && (randomY > 1)) {
+                    if (Level[randomY - 2][randomX].visited == false) {        // If not visited
+                        Level[randomY - 1][randomX].value = ' ';        // Delete display
+                        Level[randomY - 1][randomX].visited = true;       // Mark cell as visited
+                        Level[randomY][randomX].top_wall = false;       // Knock down wall
+                        
+                        back_trackX.push(randomX);                      // Push X for back track
+                        back_trackY.push(randomY);                      // Push Y for back track
+                        
+                        randomY -= 2;                                   // Move to next cell
+                        Level[randomY][randomX].visited = true;         // Mark cell moved to as visited
+                        Level[randomY][randomX].value = ' ';          // Update path
+                        Level[randomY][randomX].bot_wall = false;       // Knock down wall
+                        visitedCells++;                                 // Increase visitedCells counter
+                    } else
+                        continue;
                 }
-                else
-                    continue;
-            }
-            
-            // GO DOWN
-            else if((random == 2) && (randomY < SIZE - 2)) {
-                if(Level[randomY + 2][randomX].visited == false) {        // If not visited
-                    Level[randomY + 1][randomX].value = ' ';        // Delete display
-                    Level[randomY + 1][randomX].visited = true;       // Mark cell as visited
-                    Level[randomY][randomX].bot_wall = false;       // Knock down wall
-                    
-                    back_trackX.push(randomX);                      // Push X for back track
-                    back_trackY.push(randomY);                      // Push Y for back track
-                    
-                    randomY += 2;                                   // Move to next cell
-                    Level[randomY][randomX].visited = true;         // Mark cell moved to as visited
-                    Level[randomY][randomX].value = ' ';          // Update path
-                    Level[randomY][randomX].top_wall = false;       // Knock down wall
-                    visitedCells++;                                 // Increase visitedCells counter
+                
+                // GO DOWN
+                else if ((random == 2) && (randomY < SIZE - 2)) {
+                    if (Level[randomY + 2][randomX].visited == false) {        // If not visited
+                        Level[randomY + 1][randomX].value = ' ';        // Delete display
+                        Level[randomY + 1][randomX].visited = true;       // Mark cell as visited
+                        Level[randomY][randomX].bot_wall = false;       // Knock down wall
+                        
+                        back_trackX.push(randomX);                      // Push X for back track
+                        back_trackY.push(randomY);                      // Push Y for back track
+                        
+                        randomY += 2;                                   // Move to next cell
+                        Level[randomY][randomX].visited = true;         // Mark cell moved to as visited
+                        Level[randomY][randomX].value = ' ';          // Update path
+                        Level[randomY][randomX].top_wall = false;       // Knock down wall
+                        visitedCells++;                                 // Increase visitedCells counter
+                    } else
+                        continue;
                 }
-                else
-                    continue;
-            }
-            
-            // GO LEFT
-            else if((random == 3) && (randomX > 1)) {
-                if(Level[randomY][randomX - 2].visited == false) {        // If not visited
-                    Level[randomY][randomX - 1].value = ' ';        // Delete display
-                    Level[randomY][randomX - 1].visited = true;       // Mark cell as visited
-                    Level[randomY][randomX].left_wall = false;      // Knock down wall
-                    
-                    back_trackX.push(randomX);                      // Push X for back track
-                    back_trackY.push(randomY);                      // Push Y for back track
-                    
-                    randomX -= 2;                                   // Move to next cell
-                    Level[randomY][randomX].visited = true;         // Mark cell moved to as visited
-                    Level[randomY][randomX].value = ' ';          // Update path
-                    Level[randomY][randomX].right_wall = false;     // Knock down wall
-                    visitedCells++;                                 // Increase visitedCells counter
+                
+                // GO LEFT
+                else if ((random == 3) && (randomX > 1)) {
+                    if (Level[randomY][randomX - 2].visited == false) {        // If not visited
+                        Level[randomY][randomX - 1].value = ' ';        // Delete display
+                        Level[randomY][randomX - 1].visited = true;       // Mark cell as visited
+                        Level[randomY][randomX].left_wall = false;      // Knock down wall
+                        
+                        back_trackX.push(randomX);                      // Push X for back track
+                        back_trackY.push(randomY);                      // Push Y for back track
+                        
+                        randomX -= 2;                                   // Move to next cell
+                        Level[randomY][randomX].visited = true;         // Mark cell moved to as visited
+                        Level[randomY][randomX].value = ' ';          // Update path
+                        Level[randomY][randomX].right_wall = false;     // Knock down wall
+                        visitedCells++;                                 // Increase visitedCells counter
+                    } else
+                        continue;
                 }
-                else
-                    continue;
-            }
-            
-            // GO RIGHT
-            else if((random == 4) && (randomX < SIZE - 2)) {
-                if(Level[randomY][randomX + 2].visited == false) {        // If not visited
-                    Level[randomY][randomX + 1].value = ' ';        // Delete display
-                    Level[randomY][randomX + 1].visited = true;       // Mark cell as visited
-                    Level[randomY][randomX].right_wall = false;     // Knock down wall
-                    
-                    back_trackX.push(randomX);                      // Push X for back track
-                    back_trackY.push(randomY);                      // Push Y for back track
-                    
-                    randomX += 2;                                   // Move to next cell
-                    Level[randomY][randomX].visited = true;         // Mark cell moved to as visited
-                    Level[randomY][randomX].value = ' ';          // Update path
-                    Level[randomY][randomX].left_wall = false;      // Knock down wall
-                    visitedCells++;                                 // Increase visitedCells counter
+                
+                // GO RIGHT
+                else if ((random == 4) && (randomX < SIZE - 2)) {
+                    if (Level[randomY][randomX + 2].visited == false) {        // If not visited
+                        Level[randomY][randomX + 1].value = ' ';        // Delete display
+                        Level[randomY][randomX + 1].visited = true;       // Mark cell as visited
+                        Level[randomY][randomX].right_wall = false;     // Knock down wall
+                        
+                        back_trackX.push(randomX);                      // Push X for back track
+                        back_trackY.push(randomY);                      // Push Y for back track
+                        
+                        randomX += 2;                                   // Move to next cell
+                        Level[randomY][randomX].visited = true;         // Mark cell moved to as visited
+                        Level[randomY][randomX].value = ' ';          // Update path
+                        Level[randomY][randomX].left_wall = false;      // Knock down wall
+                        visitedCells++;                                 // Increase visitedCells counter
+                    } else
+                        continue;
                 }
-                else
-                    continue;
+            } else {
+                if (!back_trackX.empty()) {
+                    randomX = back_trackX.top();
+                    back_trackX.pop();
+                }
+                
+                if (!back_trackY.empty()) {
+                    randomY = back_trackY.top();
+                    back_trackY.pop();
+                }
             }
-        }
-        else {
-            randomX = back_trackX.top();
-            back_trackX.pop();
-            
-            randomY = back_trackY.top();
-            back_trackY.pop();
-        }
         
         //ClearScreen();
-        Redraw(Level);
+        //Redraw(Level);
     }
     
     goalX = randomX;
     goalY = randomY;
     Level[goalY][goalX].value = 'E';
-    Redraw(Level);
+    //Redraw(Level);
 }
 
+//--------------------------------------------------------------
 // SAVE MAZE
 void SaveMaze(Cell Level[][SIZE]) {
     std::ofstream output;
-    std::string filename = "maze_data";
+    std::string filename = "maze_data.txt";
     char input;
     
     output.open(filename);
-        
+    
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             output << Level[i][j].value;
@@ -213,6 +212,7 @@ void SaveMaze(Cell Level[][SIZE]) {
     output.close();
 }
 
+//--------------------------------------------------------------
 bool MazeValid(Cell check_maze[][SIZE]) {
     bool isAllEmpty = false;
     bool isAllFull = false;
@@ -229,11 +229,4 @@ bool MazeValid(Cell check_maze[][SIZE]) {
         return false;
     }
     return true;
-    
-    
-    
-    
-    
-    
-    
 }
