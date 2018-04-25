@@ -5,7 +5,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    //srand((unsigned)time(NULL));
     ofSetFrameRate(frame_rate);
     
     ofSetVerticalSync(true);
@@ -34,17 +33,13 @@ void ofApp::update() {
     if (USE_CAMERA_INPUT) {
         comp_tracking.FindPoint(comp_camera);
     }
-    if (current_maze.inBattleMode) {
-        //Battle::InitiateBattle(player, current_maze.current_posX, current_maze.current_posY);
-        
-    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
     ofBackground(0, 0, 0);
     
-    if (current_maze.game_ended) {
+    if (current_maze.game_ended && GAME_MODE_FREE) {
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
         ofDrawBitmapString("GAME OVER!", ofGetWidth() / 2, ofGetHeight() / 2);
         return;
@@ -57,17 +52,15 @@ void ofApp::draw() {
     if (GAME_MODE_FREE) {
         if (!character_type_chosen) { //Choosing character type settings
             player->ChooseCharacterType();
-         return;
-         }
+            return;
+        }
         free_gui.draw(); //draws visibility slider
         player->DrawCharacterStats();
     }
     
     view_camera.begin(); //perspective camera
-    //current_maze.DrawMaze(); //draws maze and player cubes
     
     if (current_maze.inBattleMode) {
-        //ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
         view_camera.setDistance(initial_cam_distance);
         view_camera.end();
         current_maze.inBattleMode = !current_battle.DrawBattle(player, player, current_battle.stop_clicked);
@@ -155,14 +148,13 @@ void ofApp::keyPressed(int key) {
                 GAME_MODE_TIME = true;
                 game_mode_chosen = true;
                 current_maze.SetMode(SIZE);
+                current_maze.free_game_mode = false;
                 current_maze.TimeMazeSetup();
                 current_timer.ModeVisualsKeyPressed('r');
             }
             break;
         case 'm':
-            //stop moving target in battle
-            //SetCircleClicked(true);
-            //draw();
+            //cheat command to exit battle sequence
             current_maze.inBattleMode = false; //DOESNT WORK UNLESS DIRECTLY DONE?
             break;
             

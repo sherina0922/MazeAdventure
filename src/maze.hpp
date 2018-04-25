@@ -11,6 +11,7 @@
 #include "ofMain.h"
 #include "mazeGenerator.hpp"
 #include <vector>
+#include <fstream>
 
 #include "constants.cpp"
 #include "character.hpp"
@@ -21,7 +22,7 @@
 class Maze {
     public :
     
-    vector< vector<char> > maze_structure; //need to make vector so can change size
+    vector< vector <char> > maze_structure; //need to make vector so can change size
     
     //char time_maze_structure[21][21];
     int current_posX, current_posY; //the player's current position coordinates (in maze)
@@ -31,6 +32,7 @@ class Maze {
     //bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
     bool game_ended = false;
     bool inBattleMode = false;
+    std::vector < vector< vector <char> > > generated_maze_vector;
     
     Character *maze_copy_player;
     
@@ -48,6 +50,7 @@ class Maze {
     void CameraMovePosition(int camera_current_x, int camera_current_y);
     void CheckGameStatus(int posX, int posY);
     void SetInBattleMode(bool isTrue);
+    void ReadMazeFromFile();
     
 };
 

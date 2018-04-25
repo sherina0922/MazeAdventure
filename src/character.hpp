@@ -55,6 +55,6 @@ public:
     void ChooseCharacterType();
     void CharacterKeyPressed(int key);
     void DrawCharacterStats();
-  
+    
 };
 //*/

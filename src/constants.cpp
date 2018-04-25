@@ -16,3 +16,4 @@
 #define CUBE_SIZE 5.0
 #define GRAY 63.0
 #define SIZE 21
+#define CHARS_IN_MAZE 441

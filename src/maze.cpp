@@ -36,10 +36,10 @@ void Maze::DrawMaze() {
                 return;
             }
         } else {
-            Maze::TimeMazeSetup();
             game_ended = false;
+            TimeMazeSetup();
             //number_games++;
-            //Maze::SetMode(maze_structure.size() - 5 * number_games);
+            return;
         }
     } else {
         
@@ -54,7 +54,7 @@ void Maze::DrawMaze() {
                     
                     if (maze_structure[current_x][current_y] == '#') {
                         ofSetColor(GRAY, GRAY, GRAY); //Set to TRANSPARENT GRAY for maze walls
-                    
+                        
                     } else if (maze_structure[current_x][current_y] == 'M') {
                         ofSetColor(0, 0, FULL_COLOR); //Set to BLUE for monsters
                     }
@@ -95,98 +95,101 @@ void Maze::DrawMaze() {
 }
 
 //--------------------------------------------------------------
-void Maze::TimeMazeSetup() {
-    free_game_mode = false;
-    //  WRITE METHOD TO READ IN TEXT FILE AND TURN INTO CHAR ARRAY VECTOR
-    /*
-     PopulateNewMaze();
-     maze_structure.resize(21);
-     for (int index = 0; index < 41; ++index) {
-     maze_structure[index].resize(21);
-     }
-     
-     std::string line;
-     char each_char;
-     std::ifstream file;
-     std::string file_contents;
-     
-     file.open("maze_data.txt");
-     if (file.is_open()) {
-     while (file >> std::noskipws >> each_char) {
-     file_contents += each_char;
-     }
-     file.close();
-     }
-     file.close();
-     file_contents.erase(std::remove(file_contents.begin(), file_contents.end(), '\n'), file_contents.end());
-     
-     int count = 0; //442 * number_games;
-     
-     start_x = 0;
-     start_y = 0;
-     for (int height = 0; height < maze_structure.size(); height++) {
-     for (int width = 0; width < maze_structure[0].size(); width++) {
-     maze_structure[height][width] = file_contents.at(count); //converts string to char
-     count++;
-     }
-     }
-     
-     for (int x = 0 ; x < maze_structure.size() ; x++) {
-     for (int y = 0 ; y < maze_structure[0].size() ; y++) {
-     if (maze_structure[x][y] == 'S') {
-     start_x = x;
-     start_y = y;
-     } else if (maze_structure[x][y] == 'E') {
-     end_x = x;
-     end_y = y;
-     }
-     }
-     }
-     */
-    //FreeMazeSetup();
-    unsigned char adventure_maze_template[HEIGHT][WIDTH] = { //delete all this later when maze generator works
-        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
-        {'#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-        {'#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#'},
-        {'#', ' ', ' ', 'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#'},
-        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', '#', '#'},
-        {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#'},
-        {'#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#'},
-        {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', 'M', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', 'M', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'},
-        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#'},
-        {'#', 'S', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'E', '#'},
-        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
-        
-    };
+void Maze::ReadMazeFromFile() {
+    std::string line;
+    char each_char;
+    std::ifstream file;
+    std::string file_contents;
+    std::string file_path = "";
     
-    maze_structure.resize(WIDTH);
-    for (int index = 0; index < WIDTH; ++index) {
-        maze_structure[index].resize(HEIGHT);
+    if (free_game_mode) {
+        //Maze below derived from https://www.youtube.com/watch?v=9Ozu-B2HLY4
+        file_path = "/Users/sherinahung/Documents/GitHub/final-project-sherina0922/bin/data/free-maze-data.txt";
+    } else {
+        //Maze below randomly generated by algorithm and manually inserted in file
+        file_path = "/Users/sherinahung/Documents/GitHub/final-project-sherina0922/bin/data/maze-data.txt";
+    }
+    file.open(file_path);
+    if (file.is_open()) {
+        while (file >> std::noskipws >> each_char) {
+            file_contents += each_char;
+        }
+        file.close();
+    }
+    file.close();
+    file_contents.erase(std::remove(file_contents.begin(), file_contents.end(), '\n'), file_contents.end());
+    
+    if (!free_game_mode) { //time game mode
+        int vector_index = 0;
+        std::vector<std::string> separated_maze_string_vector(file_contents.length() / CHARS_IN_MAZE); //split string by maze char size
+        for (int index = 0; index < file_contents.length(); index += CHARS_IN_MAZE) {
+            separated_maze_string_vector.at(vector_index++) = file_contents.substr(index, CHARS_IN_MAZE);
+        }
+        
+        vector <vector<char>> temp_maze_structure;
+        int char_count;
+        for (std::string each_maze_string : separated_maze_string_vector) {
+            temp_maze_structure.clear();
+            char_count = 0;
+            temp_maze_structure.resize(SIZE);
+            for (int index_x = 0; index_x < SIZE; index_x++) {
+                temp_maze_structure.at(index_x).resize(SIZE);
+                //update each cell
+                for (int index_y = 0; index_y < SIZE; index_y++) {
+                    temp_maze_structure.at(index_x).at(index_y) = each_maze_string.at(char_count++);
+                }
+            }
+            generated_maze_vector.push_back(temp_maze_structure);
+        }
+    } else { //free game mode
+        int char_count = 0;
+        maze_structure.resize(WIDTH);
+        for (int index = 0; index < WIDTH; ++index) {
+            maze_structure[index].resize(HEIGHT);
+        }
+        
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                maze_structure[x][y] = file_contents.at(char_count++);
+                if (maze_structure[x][y] == 'S') {
+                    start_x = current_posX = x;
+                    start_y = current_posY = y;
+                } else if (maze_structure[x][y] == 'E') {
+                    end_x = x;
+                    end_y = y;
+                }
+            }
+        }
     }
     
-    for (int y = 0; y < HEIGHT; y++) {
-        for (int x = 0; x < WIDTH; x++) {
-            maze_structure[x][y] = adventure_maze_template[y][x];
-            if (adventure_maze_template[y][x] == 'S') {
+}
+
+//--------------------------------------------------------------
+void Maze::TimeMazeSetup() {
+    free_game_mode = false;
+    if (generated_maze_vector.empty()) {
+        ReadMazeFromFile();
+    }
+    
+    maze_structure.resize(SIZE);
+    for (int index = 0; index < SIZE; index++) {
+        maze_structure[index].resize(SIZE);
+    }
+    
+    SetMode(SIZE - 5 * number_games); //decrease visibility as continue to go through mazes
+    maze_structure = generated_maze_vector.at(number_games++);
+    
+    for (int x = 0; x < SIZE; x++) {
+        for (int y = 0; y < SIZE; y++) {
+            if (maze_structure[x][y] == 'S') { //setting starting location
                 start_x = current_posX = x;
                 start_y = current_posY = y;
-            } else if (adventure_maze_template[y][x] == 'E') {
+            } else if (maze_structure[x][y] == 'E') { //setting end location
                 end_x = x;
                 end_y = y;
             }
         }
     }
-    free_game_mode = false;
 }
 
 //--------------------------------------------------------------
@@ -195,54 +198,7 @@ void Maze::FreeMazeSetup(Character *current_player) {
     
     sound.load("laser_sound.mp3"); //for testing purposes only
     free_game_mode = true;
-    //Maze setup: Maze below derived from https://www.youtube.com/watch?v=9Ozu-B2HLY4  make as file and read
-    //make maze generator??? decrease visibility as player goes through more mazes???
-    
-    unsigned char adventure_maze_template[HEIGHT][WIDTH] = {
-        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
-        {'#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-        {'#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#'},
-        {'#', ' ', ' ', 'M', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#'},
-        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', '#', '#'},
-        {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#'},
-        {'#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#'},
-        {'#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', ' ', 'M', '#', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', 'M', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', ' ', '#', ' ', '#', '#', '#', ' ', '#', '#', '#', ' ', '#'},
-        {'#', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', '#', ' ', '#', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', '#'},
-        {'#', ' ', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', ' ', '#', ' ', '#', '#', '#', '#', '#', '#', '#', ' ', '#', '#', '#', '#', '#', '#', '#'},
-        {'#', 'S', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'E', '#'},
-        {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
-        
-    };
-    
-    //15,15
-    //29,13
-    
-    maze_structure.resize(WIDTH);
-    for (int index = 0; index < WIDTH; ++index) {
-        maze_structure[index].resize(HEIGHT);
-    }
-    
-    for (int y = 0; y < HEIGHT; y++) {
-        for (int x = 0; x < WIDTH; x++) {
-            maze_structure[x][y] = adventure_maze_template[y][x];
-            if (adventure_maze_template[y][x] == 'S') {
-                start_x = current_posX = x;
-                start_y = current_posY = y;
-            } else if (adventure_maze_template[y][x] == 'E') {
-                end_x = x;
-                end_y = y;
-            }
-        }
-    }
+    ReadMazeFromFile();
 }
 
 //--------------------------------------------------------------
@@ -305,6 +261,7 @@ void Maze::CameraMovePosition(int camera_current_x, int camera_current_y) {
         return;
     }
     
+    //triangular slope area???
     /*
      float pixel_slope = std::abs(std::atan(camera_current_y / camera_current_x));
      if (pixel_slope >= 0 && pixel_slope <= 1) {
@@ -365,9 +322,6 @@ void Maze::CheckGameStatus(int posX, int posY) {
     if (current_posX == end_x && current_posY == end_y) {
         Maze::SetGameEnded(true);
     } else if (maze_structure[current_posX][current_posY] == 'M' && free_game_mode) {
-        //sound.play();
-        //SetInBattleMode(true);
-        //Maze::SetGameEnded(!Battle::InitiateBattle(maze_copy_player, current_posX, current_posY));
         inBattleMode = true;
         return;
     }

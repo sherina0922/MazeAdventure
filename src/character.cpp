@@ -17,7 +17,7 @@ void Character::CharacterSetup() {
     enemy_list->push_back(CharacterType("Goblin", 20, 10, 10)); //50
     enemy_list->push_back(CharacterType("Thief", 25, 15, 10)); //55
     enemy_list->push_back(CharacterType("Vampire", 20, 13, 10)); //55
-
+    
 }
 //--------------------------------------------------------------
 std::string Character::GenerateRaceMenuString() {
