@@ -5,8 +5,7 @@
 //  Created by Sherina Hung on 4/15/18.
 //
 
-#ifndef MAZE_H
-#define MAZE_H
+#pragma once
 
 #include <stdio.h>
 #include "ofMain.h"
@@ -14,6 +13,10 @@
 #include <vector>
 
 #include "constants.cpp"
+#include "character.hpp"
+#include "battleField.hpp"
+
+//static bool inBattleMode = false;
 
 class Maze {
     public :
@@ -25,8 +28,13 @@ class Maze {
     int start_x, start_y;
     int end_x, end_y;
     int mode; //level of difficulty which determines visibility
-    bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
+    //bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
     bool game_ended = false;
+    bool inBattleMode = false;
+    
+    Character *maze_copy_player;
+    
+    ofSoundPlayer sound;
     
     int number_games = 0;
     bool free_game_mode = false;
@@ -34,12 +42,13 @@ class Maze {
     void SetMode(int new_mode);
     void SetGameEnded(bool new_status);
     void DrawMaze();
-    void FreeMazeSetup();
+    void FreeMazeSetup(Character *current_player);
     void TimeMazeSetup();
     void MazeKeyPressed(const char key);
     void CameraMovePosition(int camera_current_x, int camera_current_y);
+    void CheckGameStatus(int posX, int posY);
+    void SetInBattleMode(bool isTrue);
     
 };
 
-#endif 
 

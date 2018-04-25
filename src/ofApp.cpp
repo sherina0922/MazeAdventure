@@ -12,9 +12,9 @@ void ofApp::setup() {
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     ofSetCircleResolution(50);
     
-    view_camera.setDistance(initial_cam_distance); //Initial Distance : 150
+    view_camera.setDistance(initial_cam_distance);
     comp_camera.initGrabber(1280, 720);
-    current_maze.FreeMazeSetup();
+    current_maze.FreeMazeSetup(player);
     
     current_timer.TimerSetup();
     
@@ -23,7 +23,10 @@ void ofApp::setup() {
     visilibility_slider.addListener(this, &ofApp::visibilitySliderChanged);
     free_gui.add(visilibility_slider.setup("Visilibility", 1, 1, WIDTH)); //title, initial, min, max
     
-    player.CharacterSetup();
+    player = new Character();
+    player->CharacterSetup();
+    
+    //battle setup
 }
 
 //--------------------------------------------------------------
@@ -31,28 +34,46 @@ void ofApp::update() {
     if (USE_CAMERA_INPUT) {
         comp_tracking.FindPoint(comp_camera);
     }
+    if (current_maze.inBattleMode) {
+        //Battle::InitiateBattle(player, current_maze.current_posX, current_maze.current_posY);
+        
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
     ofBackground(0, 0, 0);
     
+    if (current_maze.game_ended) {
+        ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+        ofDrawBitmapString("GAME OVER!", ofGetWidth() / 2, ofGetHeight() / 2);
+        return;
+    }
     if (!game_mode_chosen) {
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("1. Free mode\n2. Timed mode", ofGetWidth() / 2, ofGetHeight() / 2);
+        ofDrawBitmapString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() / 2, ofGetHeight() / 2);
         return;
     }
     if (GAME_MODE_FREE) {
-        if (!character_type_chosen) { //Choosing character race settings
-            player.ChooseCharacterType();
+        if (!character_type_chosen) { //Choosing character type settings
+            player->ChooseCharacterType();
          return;
          }
-        free_gui.draw();
-        player.DrawCharacterStats();
+        free_gui.draw(); //draws visibility slider
+        player->DrawCharacterStats();
     }
     
     view_camera.begin(); //perspective camera
-    current_maze.DrawMaze(); //draws maze and player cubes
+    //current_maze.DrawMaze(); //draws maze and player cubes
+    
+    if (current_maze.inBattleMode) {
+        //ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+        view_camera.setDistance(initial_cam_distance);
+        view_camera.end();
+        current_maze.inBattleMode = !current_battle.DrawBattle(player, player, current_battle.stop_clicked);
+    } else {
+        current_maze.DrawMaze(); //draws maze and player cubes
+    }
     
     if (USE_CAMERA_INPUT) {
         comp_tracking.DrawStylus(comp_camera.getWidth(), comp_camera.getHeight());
@@ -76,7 +97,7 @@ void ofApp::keyPressed(int key) {
             case '2':
             case '3':
             case '4':
-                player.CharacterKeyPressed(key);
+                player->CharacterKeyPressed(key);
                 character_type_chosen = true;
                 return;
                 
@@ -88,6 +109,8 @@ void ofApp::keyPressed(int key) {
         case 'r': //reset entire game
             game_mode_chosen = GAME_MODE_FREE = GAME_MODE_TIME = false;
             USE_CAMERA_INPUT = false;
+            current_maze.inBattleMode = current_maze.game_ended = false;
+            current_battle.radius = 100;
             setup();
             break;
             
@@ -106,6 +129,7 @@ void ofApp::keyPressed(int key) {
         case 's':
         case 'd':
             current_maze.MazeKeyPressed(key);
+            draw();
             break;
             
         case 'f':
@@ -122,7 +146,7 @@ void ofApp::keyPressed(int key) {
             if (!game_mode_chosen) {
                 GAME_MODE_FREE = true;
                 game_mode_chosen = true;
-                current_maze.FreeMazeSetup();
+                current_maze.FreeMazeSetup(player);
             }
             break;
             
@@ -134,6 +158,16 @@ void ofApp::keyPressed(int key) {
                 current_maze.TimeMazeSetup();
                 current_timer.ModeVisualsKeyPressed('r');
             }
+            break;
+        case 'm':
+            //stop moving target in battle
+            //SetCircleClicked(true);
+            //draw();
+            current_maze.inBattleMode = false; //DOESNT WORK UNLESS DIRECTLY DONE?
+            break;
+            
+        case ' ':
+            current_battle.stop_clicked = true;
             break;
             
         default:

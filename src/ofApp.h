@@ -8,6 +8,8 @@
 #include "character.hpp"
 #include "timer.hpp"
 #include "../../../../../Applications/of_v0.9.8_osx_release/addons/ofxGui/src/ofxButton.h"
+#include "battleField.hpp"
+
 
 class ofApp : public ofBaseApp {
 
@@ -47,16 +49,9 @@ public:
     ofxIntSlider visilibility_slider;
     ofxButton difficulty_button;
     ofxButton race_button;
-    Character player;
+    Character *player;
+    Battle current_battle;
     
-    /*
-    //Timed mode variables
-    float start_time;
-    bool timer_end;
-    ofxPanel time_gui;
-    //ofParameter<float> end_time;
-    ofxFloatSlider time_slider;
-    */
     
     // Camera / View variables
     bool USE_CAMERA_INPUT = false; //TRUE if player decides to use camera input to move; FALSE if otherwise and by default

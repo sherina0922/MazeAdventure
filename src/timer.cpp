@@ -47,7 +47,7 @@ void Timer::DrawTimedMode() {
         ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
         ofSetColor(0, 0, 0);
         ofDrawBitmapString("TIME IS UP!", ofGetWidth() / 2, ofGetHeight() / 2);
-        //ofDrawBitmapString(<#const T &textString#>, <#float x#>, <#float y#>); print number of mazes completed
+        //ofDrawBitmapString(<#const T &textString#>, <#float x#>, <#float y#>); //print number of mazes completed
     }
 }
 

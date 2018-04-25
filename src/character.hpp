@@ -14,15 +14,14 @@
 
 #include "constants.cpp"
 
-
 class Character {
     
 public:
     struct CharacterType {
         std::string name;
-        double health;
-        double attack;
-        double defense;
+        int health;
+        int attack;
+        int defense;
         bool isDead = false;
         CharacterType() {
             name = "";
@@ -34,16 +33,21 @@ public:
         CharacterType(std::string temp_name, double temp_health, double temp_attack, double temp_defense) {
             name = temp_name;
             health = temp_health;
+            attack = temp_attack;
             defense = temp_defense;
             isDead = false;
         };
     };
     
-    //Character();
+    Character() {
+        player_stats = CharacterType();
+        character_list = new std::vector<CharacterType>;
+        enemy_list = new std::vector<CharacterType>;
+    };
     CharacterType player_stats;
     
-    std::vector<CharacterType> character_list;
-    std::vector<CharacterType> enemy_list;
+    std::vector<CharacterType> *character_list;
+    std::vector<CharacterType> *enemy_list;
     
     void CharacterSetup();
     std::string GenerateRaceMenuString();

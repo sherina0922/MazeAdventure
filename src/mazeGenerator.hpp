@@ -5,8 +5,7 @@
 //  Created by Sherina Hung on 4/22/18.
 //
 
-#ifndef mazeGenerator_hpp
-#define mazeGenerator_hpp
+#pragma once
 
 #include <stdio.h>
 #include <iostream>
@@ -42,5 +41,3 @@ void SaveMaze(Cell Level[][SIZE]);
 bool MazeValid(Cell check_maze[][SIZE]);
 std::string GetFileContents();
 
-
-#endif /* mazeGenerator_hpp */
