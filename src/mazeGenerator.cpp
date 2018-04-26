@@ -22,6 +22,8 @@ void PopulateNewMaze() {
     GenerateMaze(new_maze, posX, posY, goalX, goalY);
     if (MazeValid(new_maze)) {
         SaveMaze(new_maze);
+    } else {
+        PopulateNewMaze();
     }
 }
 
@@ -197,8 +199,11 @@ void GenerateMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goa
 //--------------------------------------------------------------
 // SAVE MAZE
 void SaveMaze(Cell Level[][SIZE]) {
+    //note: overwrites anything already in the file, so always read from first line :)
+    //note: but also produces circle of death sometimes and nothing runs... generally 2/3 of the time and almost def if
+    //move on to the second maze
     std::ofstream output;
-    std::string filename = "maze_data.txt";
+    std::string filename = "/Users/sherinahung/Documents/GitHub/final-project-sherina0922/bin/data/test-maze-data.txt";
     char input;
     
     output.open(filename);

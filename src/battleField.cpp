@@ -59,7 +59,7 @@ bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed
     ofDrawBitmapString("Press space to stop", ofGetWindowWidth() / 2, ofGetWindowHeight() / 4);
     
     ofSetColor(FULL_COLOR,165,0); //Set to ORANGE
-    ofDrawCircle(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, initial_radius / 2);
+    ofDrawCircle(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, INITIAL_RADIUS / 2);
     
     ofSetColor(0, FULL_COLOR, 0); //Set to GREEN
     ofDrawCircle(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 20);
@@ -74,24 +74,24 @@ bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed
     //float damage = 0;
     if (stop_pressed) {
         if (radius <= 20) {
-            radius = initial_radius;
+            radius = INITIAL_RADIUS;
             stop_clicked = false;
             //damage = player.player_stats.attack - monster.player_stats.defense;
             return true;
-        } else if (radius <= initial_radius / 2) {
+        } else if (radius <= INITIAL_RADIUS / 2) {
             //damage = 0.75 * (player.player_stats.attack) - monster.player_stats.defense;
-            radius = initial_radius;
+            radius = INITIAL_RADIUS;
             stop_clicked = false;
             return false;
         } else {
             //damage = 0.50 * (player.player_stats.attack) - monster.player_stats.defense;
-            radius = initial_radius;
+            radius = INITIAL_RADIUS;
             stop_clicked = false;
             return false;
         }
     } else if (!stop_pressed && radius < 0) {
          //damage = 0.25 * (player.player_stats.attack) - monster.player_stats.defense;
-        radius = initial_radius;
+        radius = INITIAL_RADIUS;
         stop_pressed = false;
         return false;
     }

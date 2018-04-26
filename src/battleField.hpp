@@ -10,9 +10,9 @@
 #include <stdio.h>
 #include "ofMain.h"
 #include "character.hpp"
+#include "constants.cpp"
 
 static ofSoundPlayer sound1;
-const float initial_radius = 100;
 
 class Battle {
 public:
@@ -20,7 +20,7 @@ public:
     void SetStopClicked(bool stuff) {
         stop_clicked = stuff;
     };
-    float radius = initial_radius;
+    float radius = INITIAL_RADIUS;
     
     int DetermineMonster(int posX, int posY);
     bool InitiateBattle(Character *player, int posX, int posY);

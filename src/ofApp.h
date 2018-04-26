@@ -33,7 +33,7 @@ public:
     void visibilitySliderChanged(int & visilibility_slider);
     
     bool game_started = false;
-    bool difficulty_chosen = false;
+    bool difficulty_chosen = false; // i dont think is used?
     bool character_type_chosen = false;
     
     bool game_mode_chosen = false;

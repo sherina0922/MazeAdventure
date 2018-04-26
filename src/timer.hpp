@@ -29,7 +29,7 @@ public:
     
     void TimerSetup();
     void DrawTimedMode();
-    void ModeVisualsKeyPressed(int key);
+    void TimerKeyPressed(int key);
     void SetStartTime(float time);
     
 };

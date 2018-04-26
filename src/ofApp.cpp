@@ -5,13 +5,13 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    ofSetFrameRate(frame_rate);
+    ofSetFrameRate(FRAME_RATE);
     
     ofSetVerticalSync(true);
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     ofSetCircleResolution(50);
     
-    view_camera.setDistance(initial_cam_distance);
+    view_camera.setDistance(INITIAL_VIEW_DISTANCE);
     comp_camera.initGrabber(1280, 720);
     current_maze.FreeMazeSetup(player);
     
@@ -39,11 +39,14 @@ void ofApp::update() {
 void ofApp::draw() {
     ofBackground(0, 0, 0);
     
-    if (current_maze.game_ended && GAME_MODE_FREE) {
-        ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("GAME OVER!", ofGetWidth() / 2, ofGetHeight() / 2);
-        return;
-    }
+    /*
+     //drawing game over screen
+     if (current_maze.game_ended && GAME_MODE_FREE) {
+     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+     ofDrawBitmapString("GAME OVER!", ofGetWidth() / 2, ofGetHeight() / 2);
+     return;
+     }*/
+    
     if (!game_mode_chosen) {
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
         ofDrawBitmapString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() / 2, ofGetHeight() / 2);
@@ -61,11 +64,11 @@ void ofApp::draw() {
     view_camera.begin(); //perspective camera
     
     if (current_maze.inBattleMode) {
-        view_camera.setDistance(initial_cam_distance);
+        view_camera.setDistance(INITIAL_VIEW_DISTANCE); //reset and lock view
         view_camera.end();
-        current_maze.inBattleMode = !current_battle.DrawBattle(player, player, current_battle.stop_clicked);
+        current_maze.inBattleMode = !current_battle.DrawBattle(player, player, current_battle.stop_clicked); //whether or not in battle mode determined by battle result
     } else {
-        current_maze.DrawMaze(); //draws maze and player cubes
+        current_maze.DrawMaze(); //draw maze and player cubes
     }
     
     if (USE_CAMERA_INPUT) {
@@ -83,9 +86,26 @@ void ofApp::draw() {
 }
 
 //--------------------------------------------------------------
+static void reset(ofApp &object) {
+    object.game_mode_chosen = object.GAME_MODE_FREE = object.GAME_MODE_TIME = false;
+    object.USE_CAMERA_INPUT = false;
+    object.character_type_chosen = false;
+    
+    object.current_maze.inBattleMode = object.current_maze.game_ended = false;
+    object.current_maze.number_games = 0;
+    
+    object.current_battle.radius = INITIAL_RADIUS;
+    
+    object.current_timer.timer_paused = false;
+    object.current_timer.TimerKeyPressed('t');
+    
+    object.setup();
+}
+
+//--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
     if (game_mode_chosen && GAME_MODE_FREE && !character_type_chosen) {
-        switch (key) {
+        switch (key) { //choosing character type
             case '1':
             case '2':
             case '3':
@@ -100,29 +120,28 @@ void ofApp::keyPressed(int key) {
     }
     switch (key) {
         case 'r': //reset entire game
-            game_mode_chosen = GAME_MODE_FREE = GAME_MODE_TIME = false;
-            USE_CAMERA_INPUT = false;
-            current_maze.inBattleMode = current_maze.game_ended = false;
-            current_battle.radius = 100;
-            setup();
+            //make separate reset method for this
+            reset(*this);
             break;
             
         case 'c':
             //Use camera movement input
             USE_CAMERA_INPUT = !USE_CAMERA_INPUT;
-            view_camera.setDistance(initial_cam_distance);
+            view_camera.setDistance(INITIAL_VIEW_DISTANCE);
             if (view_camera.getMouseInputEnabled()) //ofEasyCam camera movement, lock or unlock model movement
                 view_camera.disableMouseInput();
             else
                 view_camera.enableMouseInput();
             break;
             
-        case 'w':
+        case 'w': //movement keys
         case 'a':
         case 's':
         case 'd':
-            current_maze.MazeKeyPressed(key);
-            draw();
+            if (!current_timer.timer_paused) {
+                current_maze.MazeKeyPressed(key);
+                draw();
+            }
             break;
             
         case 'f':
@@ -132,33 +151,31 @@ void ofApp::keyPressed(int key) {
             
         case 't': //reset timer
         case 'p': //pause timer
-            current_timer.ModeVisualsKeyPressed(key);
+            current_timer.TimerKeyPressed(key);
             break;
             
-        case '1':
+        case '1': //choosing free game mode
             if (!game_mode_chosen) {
-                GAME_MODE_FREE = true;
-                game_mode_chosen = true;
+                game_mode_chosen = GAME_MODE_FREE = true;
                 current_maze.FreeMazeSetup(player);
             }
             break;
             
-        case '2':
+        case '2': //choosing timed game mode
             if (!game_mode_chosen) {
-                GAME_MODE_TIME = true;
-                game_mode_chosen = true;
-                current_maze.SetMode(SIZE);
+                game_mode_chosen = GAME_MODE_TIME = true;
+                current_maze.SetMode(SIZE); //set initial mode visibility to the size
                 current_maze.free_game_mode = false;
                 current_maze.TimeMazeSetup();
-                current_timer.ModeVisualsKeyPressed('r');
+                current_timer.TimerKeyPressed('t');
             }
             break;
         case 'm':
             //cheat command to exit battle sequence
-            current_maze.inBattleMode = false; //DOESNT WORK UNLESS DIRECTLY DONE?
+            current_maze.inBattleMode = false;
             break;
             
-        case ' ':
+        case ' ': //stop circle in battle
             current_battle.stop_clicked = true;
             break;
             

@@ -20,4 +20,3 @@
 
 - Basic visualization of maze graphics
 - EasyCam setup/works
-

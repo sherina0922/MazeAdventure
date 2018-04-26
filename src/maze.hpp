@@ -35,7 +35,6 @@ class Maze {
     std::vector < vector< vector <char> > > generated_maze_vector;
     
     Character *maze_copy_player;
-    
     ofSoundPlayer sound;
     
     int number_games = 0;
@@ -51,6 +50,7 @@ class Maze {
     void CheckGameStatus(int posX, int posY);
     void SetInBattleMode(bool isTrue);
     void ReadMazeFromFile();
+    int BoxTranslateCoordinates(bool isFreeMode, int location, bool isX);
     
 };
 

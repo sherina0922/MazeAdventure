@@ -52,11 +52,11 @@ void Timer::DrawTimedMode() {
 }
 
 //--------------------------------------------------------------
-void Timer::ModeVisualsKeyPressed(int key) {
+void Timer::TimerKeyPressed(int key) {
     switch (key) {
-        case 'r':
+        case 't':
             timer_end = false; //reset timer
-            start_time = ofGetElapsedTimeMillis();
+            SetStartTime(ofGetElapsedTimeMillis());
             break;
             
         case 'p':

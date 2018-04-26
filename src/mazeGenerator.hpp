@@ -15,11 +15,6 @@
 #include <vector>
 
 #include "constants.cpp"
-/********************************
- * USED FOR THE SIZE OF THE MAZE *
- *   Must be an odd number for   *
- *    maze traversal reasons     *
- ********************************/
 
 // CELL STRUCTURE
 struct Cell
