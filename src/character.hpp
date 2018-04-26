@@ -51,7 +51,6 @@ public:
     
     void CharacterSetup();
     std::string GenerateRaceMenuString();
-    
     void ChooseCharacterType();
     void CharacterKeyPressed(int key);
     void DrawCharacterStats();

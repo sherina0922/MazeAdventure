@@ -19,11 +19,7 @@ public:
     
     //Timed mode variables
     float start_time;
-    bool timer_end;
-    ofxPanel time_gui;
-    //ofParameter<float> end_time;
-    ofxFloatSlider time_slider;
-    //int number_completed = 0;
+    bool timer_ended;
     bool timer_paused = false;
     float time_remaining;
     

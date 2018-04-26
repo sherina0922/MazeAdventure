@@ -18,3 +18,5 @@
 #define SIZE 21 //must be odd for maze algorithm to work
 #define CHARS_IN_MAZE 441
 #define INITIAL_RADIUS 100
+#define UNICODE_1 49
+#define MILLIS_TO_SEC 1000

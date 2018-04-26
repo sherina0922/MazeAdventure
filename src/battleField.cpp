@@ -10,23 +10,17 @@
 //--------------------------------------------------------------
 int Battle::DetermineMonster(int posX, int posY) {
     //either hard code like below or randomize or label each monster something diff when parsing in
-    sound1.load("laser_sound.mp3"); //for testing purposes only
-    sound1.play();
-    
     if (posX == 3 && posY == 5) {
-        sound1.play();
         return 0;
     } else if (posX == 15 && posY == 15) {
-        sound1.play();
         return 1;
     } else if (posX == 29 && posY == 13) {
-        sound1.play();
         return 2;
     }
     
     return -1;
-
 }
+
 //--------------------------------------------------------------
 bool Battle::InitiateBattle(Character *player, int posX, int posY) {
     //return true if player win, false if player dead
@@ -49,16 +43,15 @@ bool Battle::InitiateBattle(Character *player, int posX, int posY) {
         ofDrawBitmapString("YOU DIED!", ofGetWindowWidth() / 2, ofGetWindowHeight() / 2);
         return false;
     }
-    
-    
 }
+
 //--------------------------------------------------------------
 bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed) {
     ofBackground(0, 0, 0);
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
     ofDrawBitmapString("Press space to stop", ofGetWindowWidth() / 2, ofGetWindowHeight() / 4);
     
-    ofSetColor(FULL_COLOR,165,0); //Set to ORANGE
+    ofSetColor(FULL_COLOR, 165, 0); //Set to ORANGE
     ofDrawCircle(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, INITIAL_RADIUS / 2);
     
     ofSetColor(0, FULL_COLOR, 0); //Set to GREEN
@@ -97,10 +90,8 @@ bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed
     }
     //monster.player_stats.health -= damage;
     return false;
-    
-    
-    
 }
+
 //--------------------------------------------------------------
 void Battle::BattleKeyPressed(int key) {
     if (key == ' ') {
@@ -108,18 +99,7 @@ void Battle::BattleKeyPressed(int key) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//--------------------------------------------------------------
+void Battle::SetStopClicked(bool new_status) {
+    stop_clicked = new_status;
+};

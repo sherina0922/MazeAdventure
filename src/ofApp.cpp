@@ -39,19 +39,20 @@ void ofApp::update() {
 void ofApp::draw() {
     ofBackground(0, 0, 0);
     
-    /*
+     /*
      //drawing game over screen
-     if (current_maze.game_ended && GAME_MODE_FREE) {
+     if (player->player_stats.isDead && GAME_MODE_FREE) {
      ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
      ofDrawBitmapString("GAME OVER!", ofGetWidth() / 2, ofGetHeight() / 2);
      return;
-     }*/
+     } */
     
     if (!game_mode_chosen) {
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
         ofDrawBitmapString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() / 2, ofGetHeight() / 2);
         return;
     }
+    
     if (GAME_MODE_FREE) {
         if (!character_type_chosen) { //Choosing character type settings
             player->ChooseCharacterType();
@@ -81,7 +82,14 @@ void ofApp::draw() {
     if (GAME_MODE_TIME) {
         //setup timer here
         //if time is not up, continue to draw the maze and regenerate if needed
-        current_timer.DrawTimedMode();
+        if (current_timer.timer_ended) {
+            ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+            ofSetColor(0, 0, 0);
+            ofDrawBitmapString("TIME IS UP!\nNumber of mazes complete: " + std::to_string(current_maze.number_games - 1)
+                               , ofGetWidth() / 2, ofGetHeight() / 2);
+        } else {
+            current_timer.DrawTimedMode();
+        }
     }
 }
 

@@ -55,7 +55,6 @@ void Maze::DrawMaze() {
         } else {
             game_ended = false;
             TimeMazeSetup();
-            //number_games++;
             return;
         }
     } else {
@@ -163,7 +162,7 @@ void Maze::ReadMazeFromFile() {
         }
          //*/
         /*
-         //on the spot random generating
+         //on the spot random generating time game mode
         int char_count = 0;
         if (file_contents.length() != CHARS_IN_MAZE) {
             std::cout << "Error in maze char length";
@@ -214,7 +213,7 @@ void Maze::TimeMazeSetup() {
     }
     
     SetMode(SIZE - 5 * number_games++); //decrease visibility as continue to go through mazes
-    maze_structure = generated_maze_vector.at(number_games++); //if using pre-generated mazes
+    maze_structure = generated_maze_vector.at(number_games); //if using pre-generated mazes
     
     
     for (int x = 0; x < SIZE; x++) {
@@ -234,16 +233,16 @@ void Maze::TimeMazeSetup() {
 void Maze::FreeMazeSetup(Character *current_player) {
     maze_copy_player = current_player;
     
-    sound.load("laser_sound.mp3"); //for testing purposes only
     free_game_mode = true;
     ReadMazeFromFile();
 }
 
 //--------------------------------------------------------------
 void Maze::MazeKeyPressed(const char key) {
-    //if (inBattleMode) {
-    //    return;
-    //}
+    if (inBattleMode) {
+        return;
+    }
+    
     switch (key) {
         case 'w':
             // Move up
@@ -272,22 +271,6 @@ void Maze::MazeKeyPressed(const char key) {
                 current_posX++;
             }
             break;
-            
-            /*case 'e':
-             //Set difficulty to EASY
-             mode = WIDTH;
-             break;
-             
-             case 'm':
-             //Set difficulty to MEDIUM
-             mode = 5;
-             break;
-             
-             case 'h':
-             //Set difficulty to HARD
-             mode = 2;
-             break; */
-            
     }
     CheckGameStatus(current_posX, current_posY);
 }

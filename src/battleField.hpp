@@ -12,20 +12,15 @@
 #include "character.hpp"
 #include "constants.cpp"
 
-static ofSoundPlayer sound1;
-
 class Battle {
 public:
     bool stop_clicked = false;
-    void SetStopClicked(bool stuff) {
-        stop_clicked = stuff;
-    };
     float radius = INITIAL_RADIUS;
     
+    void SetStopClicked(bool new_status);
     int DetermineMonster(int posX, int posY);
     bool InitiateBattle(Character *player, int posX, int posY);
     bool DrawBattle(Character *player, Character *monster, bool stop_pressed);
-    
     void BattleKeyPressed(int key);
 };
 

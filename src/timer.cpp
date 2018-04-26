@@ -12,21 +12,20 @@
 //
 
 #include "timer.hpp"
-const int millis_to_sec = 1000;
 
 //--------------------------------------------------------------
 void Timer::TimerSetup() {
     // Timed mode setup
-    timer_end = false;
+    timer_ended = false;
     start_time = ofGetElapsedTimef();
 }
 
 //--------------------------------------------------------------
 //Draws the timer bar
 void Timer::DrawTimedMode() {
-    time_gui.draw(); //doesnt actually do anything rn
-    if (!timer_end) {
+    if (!timer_ended) {
         float timer;
+        
         if (timer_paused) {
             timer = time_remaining;
         } else {
@@ -35,19 +34,11 @@ void Timer::DrawTimedMode() {
         
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
         ofDrawRectangle(20, 20, ofGetWidth() - (timer / MAX_TIME) * ofGetWidth(), 10);
-        ofDrawBitmapString("Time left: " + std::to_string(timer / millis_to_sec) + " seconds", 5,
+        ofDrawBitmapString("Time left: " + std::to_string(timer / MILLIS_TO_SEC) + " seconds", 5,
                            50); //Displays how much time remaining
-        
-        //Add count of mazes completed here
-        
         if (timer <= 0) {
-            timer_end = true;
+            timer_ended = true;
         }
-    } else {
-        ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofSetColor(0, 0, 0);
-        ofDrawBitmapString("TIME IS UP!", ofGetWidth() / 2, ofGetHeight() / 2);
-        //ofDrawBitmapString(<#const T &textString#>, <#float x#>, <#float y#>); //print number of mazes completed
     }
 }
 
@@ -55,7 +46,7 @@ void Timer::DrawTimedMode() {
 void Timer::TimerKeyPressed(int key) {
     switch (key) {
         case 't':
-            timer_end = false; //reset timer
+            timer_ended = false; //reset timer
             SetStartTime(ofGetElapsedTimeMillis());
             break;
             
@@ -72,7 +63,6 @@ void Timer::TimerKeyPressed(int key) {
             }
             break;
     }
-    
 }
 
 //--------------------------------------------------------------

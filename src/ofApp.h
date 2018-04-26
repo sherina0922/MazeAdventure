@@ -33,7 +33,7 @@ public:
     void visibilitySliderChanged(int & visilibility_slider);
     
     bool game_started = false;
-    bool difficulty_chosen = false; // i dont think is used?
+    bool difficulty_chosen = false; // i dont think is 
     bool character_type_chosen = false;
     
     bool game_mode_chosen = false;
@@ -41,7 +41,7 @@ public:
     bool GAME_MODE_FREE = false; // TRUE if player decides to play free game mode (has battling)
     bool GAME_MODE_TIME = false; // TRUE if player decides to play time mode (has timer and maze generator)
      
-    
+    //Timed mode variables
     Timer current_timer;
     
     //Free mode variables

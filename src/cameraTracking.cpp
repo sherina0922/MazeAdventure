@@ -1,6 +1,6 @@
 #include "../src/cameraTracking.hpp"
 
-
+//--------------------------------------------------------------
 CameraTracking::CameraTracking() {
     brightest_pixel_x = 0;
     brightest_pixel_y = 0;
@@ -44,7 +44,6 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
         }
     }
     camera.update();
-    
 }
 
 //--------------------------------------------------------------

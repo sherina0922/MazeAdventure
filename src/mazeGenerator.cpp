@@ -11,6 +11,7 @@
 //--------------------------------------------------------------
 // MAIN
 void PopulateNewMaze() {
+    //basically main function of maze generator
     Cell new_maze[SIZE][SIZE];
     int posX = 0;
     int posY = 0;
@@ -27,6 +28,7 @@ void PopulateNewMaze() {
     }
 }
 
+//--------------------------------------------------------------
 // INITIALIZE MAZE
 void Initialize(Cell Level[][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
@@ -50,29 +52,21 @@ void Initialize(Cell Level[][SIZE]) {
     }
 }
 
-/*// CLEAR SCREEN
- void ClearScreen()
- {
- HANDLE hOut;
- COORD Position;
- hOut = GetStdHandle(STD_OUTPUT_HANDLE);
- Position.X = 0;
- Position.Y = 0;
- SetConsoleCursorPosition(hOut, Position);
- }*/
-
+//--------------------------------------------------------------
 /*
- // REDRAW MAZE
+ // REDRAW MAZE -> std prints out the maze - checking purposes only
  void Redraw(Cell Level[][SIZE]) {
- for(int i = 0; i < SIZE; i++) {
- std::cout << std::endl;
- for(int j = 0; j < SIZE; j++)
- std::cout << " " << Level[i][j].value;
- }
+    for(int i = 0; i < SIZE; i++) {
+        std::cout << std::endl;
+        for(int j = 0; j < SIZE; j++) {
+            std::cout << " " << Level[i][j].value;
+        }
+    }
  }
  */
+
 //--------------------------------------------------------------
-// GENERATE MAZE
+// GENERATES MAZE
 void GenerateMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goalY) {
     srand((unsigned) time(NULL));    // Pick random start cell
     int random = 0;
@@ -185,8 +179,6 @@ void GenerateMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goa
                     back_trackY.pop();
                 }
             }
-        
-        //ClearScreen();
         //Redraw(Level);
     }
     

@@ -15,8 +15,10 @@ class CameraTracking {
 
 public:
     CameraTracking();
+    
     int brightest_pixel_x; //X-coordinate of brightest pixel
     int brightest_pixel_y; //Y-coordinate of brightest pixel
+    
     void FindPoint(ofVideoGrabber camera); 
     void DrawStylus(int width, int height);
     void ConvertPixelLocation(int width, int height);
