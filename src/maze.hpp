@@ -29,7 +29,8 @@ class Maze {
     int start_x, start_y;
     int end_x, end_y;
     int mode; //level of difficulty which determines visibility
-    //bool mode_chosen; //TRUE if mode is already determined; FALSE if not chosen yet
+    
+    bool maze_completed = false;
     bool game_ended = false;
     bool inBattleMode = false;
     std::vector < vector< vector <char> > > generated_maze_vector;
@@ -41,7 +42,7 @@ class Maze {
     bool free_game_mode = false;
     
     void SetMode(int new_mode);
-    void SetGameEnded(bool new_status);
+    void SetMazeCompleted(bool new_status);
     void DrawMaze();
     void FreeMazeSetup(Character *current_player);
     void TimeMazeSetup();
@@ -51,6 +52,7 @@ class Maze {
     void SetInBattleMode(bool isTrue);
     void ReadMazeFromFile();
     int BoxTranslateCoordinates(bool isFreeMode, int location, bool isX);
+    void DrawWin();
     
 };
 

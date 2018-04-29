@@ -18,6 +18,7 @@ public:
     
     int brightest_pixel_x; //X-coordinate of brightest pixel
     int brightest_pixel_y; //Y-coordinate of brightest pixel
+    int frequency_counter;
     
     void FindPoint(ofVideoGrabber camera); 
     void DrawStylus(int width, int height);

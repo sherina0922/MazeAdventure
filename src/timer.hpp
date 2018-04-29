@@ -24,7 +24,7 @@ public:
     float time_remaining;
     
     void TimerSetup();
-    void DrawTimedMode();
+    void DrawTimer();
     void TimerKeyPressed(int key);
     void SetStartTime(float time);
     

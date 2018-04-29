@@ -24,8 +24,6 @@ void ofApp::setup() {
     
     player = new Character();
     player->CharacterSetup();
-    
-    //battle setup
 }
 
 //--------------------------------------------------------------
@@ -49,7 +47,7 @@ void ofApp::draw() {
     
     if (!game_mode_chosen) {
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() / 2, ofGetHeight() / 2);
+        ofDrawBitmapString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() * HALF, ofGetHeight() * HALF);
         return;
     }
     
@@ -65,6 +63,7 @@ void ofApp::draw() {
     view_camera.begin(); //perspective camera
     
     if (current_maze.inBattleMode) {
+        //current_battle.InitiateBattle(player, current_maze.at(current_maze.current_posX).at(current_maze.current_posY));
         view_camera.setDistance(INITIAL_VIEW_DISTANCE); //reset and lock view
         view_camera.end();
         current_maze.inBattleMode = !current_battle.DrawBattle(player, player, current_battle.stop_clicked); //whether or not in battle mode determined by battle result
@@ -82,13 +81,19 @@ void ofApp::draw() {
     if (GAME_MODE_TIME) {
         //setup timer here
         //if time is not up, continue to draw the maze and regenerate if needed
+        if (current_maze.game_ended) {
+            ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+            ofSetColor(0, 0, 0);
+            ofDrawBitmapString("CONGRATULATIONS!\nYOU WIN!", ofGetWidth() * HALF, ofGetHeight() * HALF);
+            return;
+        }
         if (current_timer.timer_ended) {
             ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
             ofSetColor(0, 0, 0);
-            ofDrawBitmapString("TIME IS UP!\nNumber of mazes complete: " + std::to_string(current_maze.number_games - 1)
-                               , ofGetWidth() / 2, ofGetHeight() / 2);
+            ofDrawBitmapString("TIME IS UP!\nNumber of mazes completed: " + std::to_string(current_maze.number_games - 1)
+                               , ofGetWidth() * HALF, ofGetHeight() * HALF);
         } else {
-            current_timer.DrawTimedMode();
+            current_timer.DrawTimer();
         }
     }
 }
@@ -99,13 +104,15 @@ static void reset(ofApp &object) {
     object.USE_CAMERA_INPUT = false;
     object.character_type_chosen = false;
     
-    object.current_maze.inBattleMode = object.current_maze.game_ended = false;
+    object.current_maze.inBattleMode = object.current_maze.maze_completed = false;
     object.current_maze.number_games = 0;
     
     object.current_battle.radius = INITIAL_RADIUS;
     
     object.current_timer.timer_paused = false;
     object.current_timer.TimerKeyPressed('t');
+    
+    object.view_camera.reset();
     
     object.setup();
 }
@@ -135,7 +142,7 @@ void ofApp::keyPressed(int key) {
         case 'c':
             //Use camera movement input
             USE_CAMERA_INPUT = !USE_CAMERA_INPUT;
-            view_camera.setDistance(INITIAL_VIEW_DISTANCE);
+            view_camera.reset();
             if (view_camera.getMouseInputEnabled()) //ofEasyCam camera movement, lock or unlock model movement
                 view_camera.disableMouseInput();
             else

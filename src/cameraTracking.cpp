@@ -8,7 +8,7 @@ CameraTracking::CameraTracking() {
 
 //--------------------------------------------------------------
 void CameraTracking::FindPoint(ofVideoGrabber camera) {
-    
+    ofSetFrameRate(20);
     int camera_width = camera.getWidth();
     int camera_height = camera.getHeight();
     
@@ -72,6 +72,6 @@ void CameraTracking::DrawStylus(int width, int height) {
 
 //--------------------------------------------------------------
 void CameraTracking::ConvertPixelLocation(int width, int height) {
-    brightest_pixel_x = -0.5 * (brightest_pixel_x - width / 2);
-    brightest_pixel_y = -0.5 * (brightest_pixel_y - height / 2);
+    brightest_pixel_x = -HALF * (brightest_pixel_x - width * HALF);
+    brightest_pixel_y = -HALF * (brightest_pixel_y - height * HALF);
 }

@@ -8,6 +8,7 @@
 #include "battleField.hpp"
 
 //--------------------------------------------------------------
+//currently not used due to changes in maze input file format
 int Battle::DetermineMonster(int posX, int posY) {
     //either hard code like below or randomize or label each monster something diff when parsing in
     if (posX == 3 && posY == 5) {
@@ -17,15 +18,14 @@ int Battle::DetermineMonster(int posX, int posY) {
     } else if (posX == 29 && posY == 13) {
         return 2;
     }
-    
     return -1;
 }
 
 //--------------------------------------------------------------
-bool Battle::InitiateBattle(Character *player, int posX, int posY) {
+bool Battle::InitiateBattle(Character *player, int monster_number) {
     //return true if player win, false if player dead
     Character current_monster;
-    current_monster.player_stats = player->enemy_list->at(DetermineMonster(posX, posY));
+    current_monster.player_stats = player->enemy_list->at(monster_number);
     
     while (player->player_stats.health > 0 && current_monster.player_stats.health > 0) {
         //RunBattle(player, current_monster);
@@ -40,7 +40,7 @@ bool Battle::InitiateBattle(Character *player, int posX, int posY) {
     } else {
         //monster won
         ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("YOU DIED!", ofGetWindowWidth() / 2, ofGetWindowHeight() / 2);
+        ofDrawBitmapString("YOU DIED!", ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF);
         return false;
     }
 }
@@ -49,20 +49,20 @@ bool Battle::InitiateBattle(Character *player, int posX, int posY) {
 bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed) {
     ofBackground(0, 0, 0);
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-    ofDrawBitmapString("Press space to stop", ofGetWindowWidth() / 2, ofGetWindowHeight() / 4);
+    ofDrawBitmapString("Press space to stop", ofGetWindowWidth() * HALF, ofGetWindowHeight() * std::pow(HALF, 2));
     
-    ofSetColor(FULL_COLOR, 165, 0); //Set to ORANGE
-    ofDrawCircle(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, INITIAL_RADIUS / 2);
+    ofSetColor(FULL_COLOR, FULL_COLOR * HALF, 0); //Set to ORANGE
+    ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, INITIAL_RADIUS * HALF);
     
     ofSetColor(0, FULL_COLOR, 0); //Set to GREEN
-    ofDrawCircle(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, 20);
+    ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, 20);
     
     ofNoFill();
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //Set to GREEN
     if (!stop_pressed && radius >= 0) {
         radius -= 1.0;
     }
-    ofDrawCircle(ofGetWindowWidth() / 2, ofGetWindowHeight() / 2, radius); //radius should change as time passes
+    ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, radius); //radius should change as time passes
     
     //float damage = 0;
     if (stop_pressed) {
@@ -71,7 +71,7 @@ bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed
             stop_clicked = false;
             //damage = player.player_stats.attack - monster.player_stats.defense;
             return true;
-        } else if (radius <= INITIAL_RADIUS / 2) {
+        } else if (radius <= INITIAL_RADIUS * HALF) {
             //damage = 0.75 * (player.player_stats.attack) - monster.player_stats.defense;
             radius = INITIAL_RADIUS;
             stop_clicked = false;

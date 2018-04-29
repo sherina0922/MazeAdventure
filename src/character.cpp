@@ -32,7 +32,7 @@ std::string Character::GenerateRaceMenuString() {
 //--------------------------------------------------------------
 void Character::ChooseCharacterType() {
     ofBackground(0, 0, 0);
-    ofDrawBitmapString(GenerateRaceMenuString(), ofGetScreenWidth() / 4, ofGetScreenHeight() / 2);
+    ofDrawBitmapString(GenerateRaceMenuString(), ofGetScreenWidth() / 4, ofGetScreenHeight() * HALF);
 }
 
 //--------------------------------------------------------------
@@ -44,5 +44,5 @@ void Character::CharacterKeyPressed(int key) {
 void Character::DrawCharacterStats() {
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
     std:string player_condition_string = "Player stats:\nName: " + player_stats.name + "\nHealth: " + std::to_string(player_stats.health) + "\nAttack: " + std::to_string(player_stats.attack) + "\nDefense: " + std::to_string(player_stats.defense);
-    ofDrawBitmapString(player_condition_string, 5, 70);
+    ofDrawBitmapString(player_condition_string, OFFSET_X, CHARACTER_INFO_Y);
 }

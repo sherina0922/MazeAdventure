@@ -19,7 +19,7 @@ public:
     
     void SetStopClicked(bool new_status);
     int DetermineMonster(int posX, int posY);
-    bool InitiateBattle(Character *player, int posX, int posY);
+    bool InitiateBattle(Character *player, int monster_number);
     bool DrawBattle(Character *player, Character *monster, bool stop_pressed);
     void BattleKeyPressed(int key);
 };
