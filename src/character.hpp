@@ -45,6 +45,7 @@ public:
         enemy_list = new std::vector<CharacterType>;
     };
     CharacterType player_stats;
+    bool monster_not_init = true;
     
     std::vector<CharacterType> *character_list;
     std::vector<CharacterType> *enemy_list;
@@ -54,6 +55,8 @@ public:
     void ChooseCharacterType();
     void CharacterKeyPressed(int key);
     void DrawCharacterStats();
+    void DetermineMonster(int key);
+    void ResetCharacterStats();
     
 };
 //*/

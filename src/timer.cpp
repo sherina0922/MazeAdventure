@@ -12,6 +12,7 @@ void Timer::TimerSetup() {
     // Timed mode setup
     timer_ended = false;
     start_time = ofGetElapsedTimef();
+    game_over_sound.load("game_over.wav");
 }
 
 //--------------------------------------------------------------
@@ -35,6 +36,7 @@ void Timer::DrawTimer() {
         ofDrawBitmapString("Time left: " + std::to_string(timer / MILLIS_TO_SEC) + " seconds", OFFSET_X,
                            TIMER_LOCATION * 2 + TIMER_HEIGHT); //Displays how much time remaining
         if (timer <= 0) {
+            game_over_sound.play();
             timer_ended = true;
         }
     }

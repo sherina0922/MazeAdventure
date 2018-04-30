@@ -8,7 +8,6 @@ CameraTracking::CameraTracking() {
 
 //--------------------------------------------------------------
 void CameraTracking::FindPoint(ofVideoGrabber camera) {
-    ofSetFrameRate(20);
     int camera_width = camera.getWidth();
     int camera_height = camera.getHeight();
     
@@ -29,18 +28,6 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
                 brightest_pixel_x = current_x;
                 brightest_pixel_y = current_y;
             }
-            /* //Make it track green... but doesnt work
-             ofColor current_color = comp_camera.getPixels().getColor(current_posX, current_posY);
-             float hue = current_color.getHue();
-             float bright = current_color.getLightness();
-             float saturation = current_color.getSaturation();
-             checking_brightness = abs(hue - 90) + abs(bright - 49) + abs(saturation - 100);
-             if (checking_brightness < current_max_brightness) {
-             current_max_brightness = checking_brightness;
-             brightest_pixel_x = current_x;
-             brightest_pixel_y = current_y;
-             }
-             */
         }
     }
     camera.update();
@@ -48,14 +35,8 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
 
 //--------------------------------------------------------------
 void CameraTracking::DrawStylus(int width, int height) {
-    //comp_camera.draw(0, 0, ofGetWidth(), ofGetWidth());
-    
-    //draws brightest point stylus, position needs to be rescaled to deal with easycam changes...
+    //draws brightest point stylus
     ofPushMatrix();
-    
-    //ofTranslate(comp_camera.getWidth()/2,comp_camera.getHeight()/2,0); //centers the coordinates plane
-    //ofTranslate(comp_camera.getWidth()/(2*view_camera.getDistance()), comp_camera.getHeight()/(2*view_camera.getDistance()), 0);
-    
     CameraTracking::ConvertPixelLocation(width, height);
     
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //white
@@ -65,8 +46,7 @@ void CameraTracking::DrawStylus(int width, int height) {
     ofDrawCircle(brightest_pixel_x, brightest_pixel_y, 2);
     ofPopMatrix();
     
-    ofDrawBitmapString(
-                       "the current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y),
+    ofDrawBitmapString("the current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y),
                        10, 30);
 }
 

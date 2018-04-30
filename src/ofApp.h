@@ -10,7 +10,6 @@
 #include "../../../../../Applications/of_v0.9.8_osx_release/addons/ofxGui/src/ofxButton.h"
 #include "battleField.hpp"
 
-
 class ofApp : public ofBaseApp {
 
 public:
@@ -43,6 +42,7 @@ public:
      
     //Timed mode variables
     Timer current_timer;
+    ofSoundPlayer pause_sound;
     
     //Free mode variables
     ofxPanel free_gui;
@@ -50,6 +50,7 @@ public:
     ofxButton difficulty_button;
     ofxButton race_button;
     Character *player;
+    Character *current_monster;
     Battle current_battle;
     
     

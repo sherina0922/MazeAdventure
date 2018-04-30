@@ -49,6 +49,8 @@ bool Battle::InitiateBattle(Character *player, int monster_number) {
 bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed) {
     ofBackground(0, 0, 0);
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+    player->DrawCharacterStats();
+    
     ofDrawBitmapString("Press space to stop", ofGetWindowWidth() * HALF, ofGetWindowHeight() * std::pow(HALF, 2));
     
     ofSetColor(FULL_COLOR, FULL_COLOR * HALF, 0); //Set to ORANGE
@@ -60,24 +62,46 @@ bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed
     ofNoFill();
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //Set to GREEN
     if (!stop_pressed && radius >= 0) {
-        radius -= 1.0;
+        radius -= 1.5;
     }
     ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, radius); //radius should change as time passes
     
-    //float damage = 0;
+    ofTranslate(OFFSET_X, 100);
+    monster->DrawCharacterStats();
+    float damage = 0;
     if (stop_pressed) {
+        //determine damage depending on where circle is stopped
         if (radius <= 20) {
-            radius = INITIAL_RADIUS;
-            stop_clicked = false;
-            //damage = player.player_stats.attack - monster.player_stats.defense;
-            return true;
+            damage = 2 * player->player_stats.attack - monster->player_stats.defense;
         } else if (radius <= INITIAL_RADIUS * HALF) {
-            //damage = 0.75 * (player.player_stats.attack) - monster.player_stats.defense;
-            radius = INITIAL_RADIUS;
-            stop_clicked = false;
-            return false;
+            damage = 0.95 * (player->player_stats.attack) - monster->player_stats.defense;
         } else {
-            //damage = 0.50 * (player.player_stats.attack) - monster.player_stats.defense;
+            damage = 0.75 * (player->player_stats.attack) - monster->player_stats.defense;
+        }
+        if (damage > 0) {
+            monster->player_stats.health -= damage;
+            if (monster->player_stats.health <= 0) {
+                //if monster is dead
+                monster->player_stats.isDead = true;
+                return true;
+            } else {
+                //if monster not dead, monster's turn to attack
+                damage = (monster->player_stats.attack) - player->player_stats.defense;
+                if (damage <= 0) {
+                    damage = 0;
+                }
+                player->player_stats.health -= damage;
+            }
+        }
+        
+        if (player->player_stats.health <= 0) {
+            player->player_stats.isDead = true;
+            return true;
+        } else if (monster->player_stats.health <= 0) {
+            monster->player_stats.isDead = true;
+            
+            return true;
+        } else {
             radius = INITIAL_RADIUS;
             stop_clicked = false;
             return false;
@@ -102,4 +126,4 @@ void Battle::BattleKeyPressed(int key) {
 //--------------------------------------------------------------
 void Battle::SetStopClicked(bool new_status) {
     stop_clicked = new_status;
-};
+}

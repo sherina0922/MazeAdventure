@@ -22,6 +22,7 @@ public:
     bool timer_ended;
     bool timer_paused = false;
     float time_remaining;
+    ofSoundPlayer game_over_sound;
     
     void TimerSetup();
     void DrawTimer();

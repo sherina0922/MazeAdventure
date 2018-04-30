@@ -16,6 +16,7 @@ void ofApp::setup() {
     current_maze.FreeMazeSetup(player);
     
     current_timer.TimerSetup();
+    pause_sound.load("pause_sound.wav");
     
     // Free mode visilibility slider setup || Derived from guiExample
     free_gui.setup();
@@ -23,7 +24,9 @@ void ofApp::setup() {
     free_gui.add(visilibility_slider.setup("Visilibility", 1, 1, WIDTH)); //title, initial, min, max
     
     player = new Character();
+    current_monster = new Character();
     player->CharacterSetup();
+    current_monster->CharacterSetup();
 }
 
 //--------------------------------------------------------------
@@ -36,14 +39,6 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
     ofBackground(0, 0, 0);
-    
-     /*
-     //drawing game over screen
-     if (player->player_stats.isDead && GAME_MODE_FREE) {
-     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-     ofDrawBitmapString("GAME OVER!", ofGetWidth() / 2, ofGetHeight() / 2);
-     return;
-     } */
     
     if (!game_mode_chosen) {
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
@@ -58,6 +53,10 @@ void ofApp::draw() {
         }
         free_gui.draw(); //draws visibility slider
         player->DrawCharacterStats();
+        if (player->player_stats.isDead) {
+            ofDrawBitmapString("YOU DIED!", ofGetScreenWidth() * HALF, ofGetScreenHeight() * HALF);
+            current_timer.game_over_sound.play();
+        }
     }
     
     view_camera.begin(); //perspective camera
@@ -66,9 +65,21 @@ void ofApp::draw() {
         //current_battle.InitiateBattle(player, current_maze.at(current_maze.current_posX).at(current_maze.current_posY));
         view_camera.setDistance(INITIAL_VIEW_DISTANCE); //reset and lock view
         view_camera.end();
-        current_maze.inBattleMode = !current_battle.DrawBattle(player, player, current_battle.stop_clicked); //whether or not in battle mode determined by battle result
+        if (current_monster->monster_not_init) {
+            //initialize monster's stats
+            current_monster->ResetCharacterStats();
+            current_monster->DetermineMonster(current_maze.maze_structure[current_maze.current_posX][current_maze.current_posY]);
+            current_monster->monster_not_init = false;
+        }
+        current_maze.inBattleMode = !current_battle.DrawBattle(player, current_monster, current_battle.stop_clicked); //whether or not in battle mode determined by battle result
+        //if (!current_maze.inBattleMode) {
+            //reset the monster to uninitialized
+            //current_monster->monster_not_init = true;
+            //current_monster->ResetCharacterStats();
+        //}
     } else {
         current_maze.DrawMaze(); //draw maze and player cubes
+        current_monster->monster_not_init = true;
     }
     
     if (USE_CAMERA_INPUT) {
@@ -135,7 +146,6 @@ void ofApp::keyPressed(int key) {
     }
     switch (key) {
         case 'r': //reset entire game
-            //make separate reset method for this
             reset(*this);
             break;
             
@@ -167,6 +177,7 @@ void ofApp::keyPressed(int key) {
         case 't': //reset timer
         case 'p': //pause timer
             current_timer.TimerKeyPressed(key);
+            pause_sound.play();
             break;
             
         case '1': //choosing free game mode

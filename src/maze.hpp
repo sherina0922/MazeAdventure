@@ -36,7 +36,9 @@ class Maze {
     std::vector < vector< vector <char> > > generated_maze_vector;
     
     Character *maze_copy_player;
-    ofSoundPlayer sound;
+    ofSoundPlayer next_maze_sound;
+    ofSoundPlayer win_sound;
+    ofSoundPlayer game_over_sound;
     
     int number_games = 0;
     bool free_game_mode = false;

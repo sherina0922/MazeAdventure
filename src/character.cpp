@@ -21,6 +21,13 @@ void Character::CharacterSetup() {
 }
 
 //--------------------------------------------------------------
+void Character::ResetCharacterStats() {
+    character_list->clear();
+    enemy_list->clear();
+    CharacterSetup();
+}
+
+//--------------------------------------------------------------
 std::string Character::GenerateRaceMenuString() {
     std::string result = "Please choose from the following character types:\n";
     for (int count = 0; count < character_list->size(); count++) {
@@ -38,6 +45,11 @@ void Character::ChooseCharacterType() {
 //--------------------------------------------------------------
 void Character::CharacterKeyPressed(int key) {
     player_stats = character_list->at(key - UNICODE_1);
+}
+
+//--------------------------------------------------------------
+void Character::DetermineMonster(int key) {
+    player_stats = enemy_list->at(key - UNICODE_1 + 1);
 }
 
 //--------------------------------------------------------------

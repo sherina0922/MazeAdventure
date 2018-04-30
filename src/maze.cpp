@@ -49,8 +49,11 @@ void Maze::DrawMaze() {
     
     if (maze_completed) {
         if (free_game_mode) {
-            if (maze_copy_player->player_stats.health > 0) {
+            if (!maze_copy_player->player_stats.isDead) {
                 DrawWin();
+            } else {
+                //player dead
+                //game_over_sound.play();
             }
         } else {
             maze_completed = false;
@@ -208,11 +211,15 @@ void Maze::ReadMazeFromFile() {
             }
         }
     }
+    next_maze_sound.load("enter_battle.wav");
+    win_sound.load("game_win.wav");
+    game_over_sound.load("game_over.wav");
     
 }
 
 //--------------------------------------------------------------
 void Maze::TimeMazeSetup() {
+    
     //PopulateNewMaze(); //random generating
     free_game_mode = false;
     if (generated_maze_vector.empty()) {
@@ -404,6 +411,11 @@ void Maze::CameraMovePosition(int camera_current_x, int camera_current_y) {
 void Maze::CheckGameStatus(int posX, int posY) {
     if (current_posX == end_x && current_posY == end_y) {
         Maze::SetMazeCompleted(true);
+        if (free_game_mode) {
+            win_sound.play();
+        } else {
+            next_maze_sound.play();
+        }
     } else if (std::isdigit(maze_structure[current_posX][current_posY]) && free_game_mode) {
         inBattleMode = true;
         return;
