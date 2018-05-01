@@ -59,4 +59,26 @@
 - Resets generally work --> Need to continue to check for bugs
 - Reading maze structure data from text files
 - Basic random maze generator
+
+## 4/30/2018
+
+### Problems / In Progress:
+
+- Optimizing camera "brightness" tracking
+  - Determines brightest point during each update
+  - Kind of jumpy -> not super accurate and slightly laggy
+- Weird flashing boxes in the background
+  - Not in maze area but appear to the right of maze during timed mode
+- Writing tests seem undoable due to OF components
+  - All methods are part of class and the object usually contains OF components
+  
+### Completed:
+
+- Basic game flow complete
+- Camera input technically works
+- Different states of game able to be shown
+- Reset game
+- Reading maze structure data from text files
+- Basic random maze generator
+- Battle with character type elements
 - 
