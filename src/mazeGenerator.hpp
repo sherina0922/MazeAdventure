@@ -25,7 +25,7 @@ struct Cell
     bool bottom_wall;
     bool left_wall;
     bool right_wall;
-    char value; //# if wall; ' ' if empty
+    char value; // '#' if wall; ' ' if empty
 };
 
 // FUNCTION DECLARATIONS

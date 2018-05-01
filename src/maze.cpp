@@ -8,26 +8,45 @@
 #include "../src/maze.hpp"
 #include <cmath>
 
-//--------------------------------------------------------------
-void Maze::SetMode(int new_mode) {
-    if (new_mode > 1) {
-        mode = new_mode;
+/**
+ * Sets the visibility of the maze
+ *
+ * @param new_mode - the new visibility
+ */
+void Maze::SetVisibility(int new_visibility) {
+    if (new_visibility > 1) {
+        visibility = new_visibility;
     } else {
-        mode = MIN_VISIBILITY;
+        visibility = MIN_VISIBILITY;
     }
 }
 
-//--------------------------------------------------------------
+/**
+ * Sets the status of the maze to completed or not
+ *
+ * @param new_status - new status of the maze
+ */
 void Maze::SetMazeCompleted(bool new_status) {
     maze_completed = new_status;
 }
 
-//--------------------------------------------------------------
+/**
+ * Sets the status of the maze to in-battle-mode or not
+ *
+ * @param isTrue - new status of the maze
+ */
 void Maze::SetInBattleMode(bool isTrue) {
     inBattleMode = isTrue;
 }
 
-//--------------------------------------------------------------
+/**
+ * Translates the location of the box
+ *
+ * @param isFreeMode - TRUE if in free mode; FALSE if in timed mode
+ * @param location - the integer location of the point
+ * @param isX - TRUE if the location is the X coordinate; FALSE if the Y coordinate
+ * @return the translated location
+ */
 int Maze::BoxTranslateCoordinates(bool isFreeMode, int location, bool isX) {
     if (!isX) {
         return -location * CUBE_SIZE + MAZE_TRANSLATE * HALF;
@@ -44,17 +63,14 @@ int Maze::BoxTranslateCoordinates(bool isFreeMode, int location, bool isX) {
     }
 }
 
-//--------------------------------------------------------------
+/**
+ * Draws the maze
+ */
 void Maze::DrawMaze() {
     
     if (maze_completed) {
         if (free_game_mode) {
-            if (!maze_copy_player->player_stats.isDead) {
-                DrawWin();
-            } else {
-                //player dead
-                //game_over_sound.play();
-            }
+            DrawWin();
         } else {
             maze_completed = false;
             TimeMazeSetup();
@@ -65,18 +81,19 @@ void Maze::DrawMaze() {
         for (int current_y = 0; current_y < HEIGHT; current_y++) {
             for (int current_x = 0; current_x < WIDTH; current_x++) {
                 
-                if (std::abs(current_x - current_posX) < mode &&
-                    std::abs(current_y - current_posY) < mode) {
+                if (std::abs(current_x - current_posX) < visibility &&
+                    std::abs(current_y - current_posY) < visibility) {
                     
                     ofPushMatrix();
-                    ofTranslate(BoxTranslateCoordinates(free_game_mode, current_x, true), BoxTranslateCoordinates(free_game_mode, current_y, false), 0);
+                    ofTranslate(BoxTranslateCoordinates(free_game_mode, current_x, true),
+                                BoxTranslateCoordinates(free_game_mode, current_y, false), 0);
                     
                     if (maze_structure[current_x][current_y] == '#') {
                         ofSetColor(GRAY, GRAY, GRAY); //Set to TRANSPARENT GRAY for maze walls
                         
                     } else if (std::isdigit(maze_structure[current_x][current_y])) { // == 'M'
                         ofSetColor(0, 0, FULL_COLOR); //Set to BLUE for monsters
-                    
+                        
                     } else if (maze_structure[current_x][current_y] == ' ') {
                         ofSetColor(0, 0, 0); //Set to BLACK
                         
@@ -93,7 +110,8 @@ void Maze::DrawMaze() {
         
         //draw player box
         ofPushMatrix();
-        ofTranslate(BoxTranslateCoordinates(free_game_mode, current_posX, true), BoxTranslateCoordinates(free_game_mode, current_posY, false), 0);
+        ofTranslate(BoxTranslateCoordinates(free_game_mode, current_posX, true),
+                    BoxTranslateCoordinates(free_game_mode, current_posY, false), 0);
         ofSetColor(FULL_COLOR, 0.0, 0.0); //Set to RED
         ofFill();
         ofDrawBox(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE);
@@ -104,7 +122,8 @@ void Maze::DrawMaze() {
         
         //draw goal box
         ofPushMatrix();
-        ofTranslate(BoxTranslateCoordinates(free_game_mode, end_x, true), BoxTranslateCoordinates(free_game_mode, end_y, false), 0);
+        ofTranslate(BoxTranslateCoordinates(free_game_mode, end_x, true),
+                    BoxTranslateCoordinates(free_game_mode, end_y, false), 0);
         ofSetColor(0.0, FULL_COLOR, 0.0); //Set to GREEN
         ofFill();
         ofDrawBox(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE);
@@ -116,7 +135,9 @@ void Maze::DrawMaze() {
     }
 }
 
-//--------------------------------------------------------------
+/**
+ * Draws the win screen
+ */
 void Maze::DrawWin() {
     ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
     ofSetColor(0, 0, 0);
@@ -124,7 +145,9 @@ void Maze::DrawWin() {
     return;
 }
 
-//--------------------------------------------------------------
+/**
+ * Reads in maze structure data from a text file according to the game mode and loads the sound effects
+ */
 void Maze::ReadMazeFromFile() {
     std::string line;
     char each_char;
@@ -138,8 +161,6 @@ void Maze::ReadMazeFromFile() {
     } else {
         //Maze below randomly generated by algorithm and manually inserted in file
         file_path = "/Users/sherinahung/Documents/GitHub/final-project-sherina0922/bin/data/maze-data.txt";
-        //"/Users/sherinahung/Documents/GitHub/final-project-sherina0922/bin/data/test-maze-data.txt";
-        //"/Users/sherinahung/Documents/GitHub/final-project-sherina0922/bin/data/maze-data.txt";
     }
     file.open(file_path);
     if (file.is_open()) {
@@ -152,10 +173,9 @@ void Maze::ReadMazeFromFile() {
     file_contents.erase(std::remove(file_contents.begin(), file_contents.end(), '\n'), file_contents.end());
     
     if (!free_game_mode) { //time game mode
-        ///*
-         //backup for reading from preloaded file
         int vector_index = 0;
-        std::vector<std::string> separated_maze_string_vector(file_contents.length() / CHARS_IN_MAZE); //split string by maze char size
+        std::vector<std::string> separated_maze_string_vector(
+                                                              file_contents.length() / CHARS_IN_MAZE); //split string by maze char size
         for (int index = 0; index < file_contents.length(); index += CHARS_IN_MAZE) {
             separated_maze_string_vector.at(vector_index++) = file_contents.substr(index, CHARS_IN_MAZE);
         }
@@ -175,22 +195,6 @@ void Maze::ReadMazeFromFile() {
             }
             generated_maze_vector.push_back(temp_maze_structure);
         }
-         //*/
-        /*
-         //on the spot random generating time game mode
-        int char_count = 0;
-        if (file_contents.length() != CHARS_IN_MAZE) {
-            std::cout << "Error in maze char length";
-            return;
-        }
-        for (int index_x = 0; index_x < SIZE; index_x++) {
-            maze_structure.at(index_x).resize(SIZE);
-            //update each cell
-            for (int index_y = 0; index_y < SIZE; index_y++) {
-                maze_structure.at(index_x).at(index_y) = file_contents.at(char_count++);
-            }
-        } */
-        
     } else { //free game mode
         int char_count = 0;
         maze_structure.resize(WIDTH);
@@ -211,16 +215,16 @@ void Maze::ReadMazeFromFile() {
             }
         }
     }
+    //load game sound effects
     next_maze_sound.load("enter_battle.wav");
     win_sound.load("game_win.wav");
     game_over_sound.load("game_over.wav");
-    
 }
 
-//--------------------------------------------------------------
+/**
+ * Sets up the maze in timed mode
+ */
 void Maze::TimeMazeSetup() {
-    
-    //PopulateNewMaze(); //random generating
     free_game_mode = false;
     if (generated_maze_vector.empty()) {
         ReadMazeFromFile();
@@ -232,13 +236,12 @@ void Maze::TimeMazeSetup() {
     }
     
     if (number_games < generated_maze_vector.size() - 1) {
-        SetMode(SIZE - DECREASE_VISIBILITY * number_games++); //decrease visibility as continue to go through mazes
-        maze_structure = generated_maze_vector.at(number_games); //if using pre-generated mazes
+        SetVisibility(SIZE - DECREASE_VISIBILITY * number_games++); //decrease visibility as continue to go through mazes
+        maze_structure = generated_maze_vector.at(number_games);
     } else {
         game_ended = true;
         return;
     }
-    
     
     for (int x = 0; x < SIZE; x++) {
         for (int y = 0; y < SIZE; y++) {
@@ -253,15 +256,22 @@ void Maze::TimeMazeSetup() {
     }
 }
 
-//--------------------------------------------------------------
+/**
+ * Sets up the maze in free mode
+ *
+ * @param current_player - the Character of the current player
+ */
 void Maze::FreeMazeSetup(Character *current_player) {
     maze_copy_player = current_player;
-    
     free_game_mode = true;
     ReadMazeFromFile();
 }
 
-//--------------------------------------------------------------
+/**
+ * Determines which direction to move if possible according to the key pressed
+ *
+ * @param key - the Unicode value of the key pressed
+ */
 void Maze::MazeKeyPressed(const char key) {
     if (inBattleMode) {
         return;
@@ -296,10 +306,15 @@ void Maze::MazeKeyPressed(const char key) {
             }
             break;
     }
-    CheckGameStatus(current_posX, current_posY);
+    CheckGameStatus();
 }
 
-//--------------------------------------------------------------
+/**
+ * Determines which direction to move according to the pixel location of the brightest point
+ *
+ * @param camera_current_x - the X position of the brightest pixel point
+ * @param camera_current_y - the Y position of the brightest pixel point
+ */
 void Maze::CameraMovePosition(int camera_current_x, int camera_current_y) {
     if ((camera_current_x == 0 || camera_current_y == 0)
         || std::abs(camera_current_x) > MAZE_TRANSLATE
@@ -374,41 +389,15 @@ void Maze::CameraMovePosition(int camera_current_x, int camera_current_y) {
         }
         
     }
-    
-    /*
-    if (camera_current_x > 0) {
-        if (camera_current_y > 0) {
-            //Move up
-            if (maze_structure[current_posX][current_posY - 1] != '#') {
-                current_posY--;
-            }
-        } else {
-            //Move right
-            if (maze_structure[current_posX + 1][current_posY] != '#') {
-                current_posX++;
-            }
-        }
-    } else {
-        if (camera_current_y > 0) {
-            //Move down
-            if (maze_structure[current_posX][current_posY + 1] != '#') {
-                current_posY++;
-            }
-        } else {
-            //Move left
-            if (maze_structure[current_posX - 1][current_posY] != '#') {
-                current_posX--;
-            }
-        }
-    }
-     */
     //check if game ended
-    CheckGameStatus(current_posX, current_posY);
+    CheckGameStatus();
     
 }
 
-//--------------------------------------------------------------
-void Maze::CheckGameStatus(int posX, int posY) {
+/**
+ * Determines whether the game has ended or is in battle mode
+ */
+void Maze::CheckGameStatus() {
     if (current_posX == end_x && current_posY == end_y) {
         Maze::SetMazeCompleted(true);
         if (free_game_mode) {
@@ -421,3 +410,4 @@ void Maze::CheckGameStatus(int posX, int posY) {
         return;
     }
 }
+

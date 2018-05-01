@@ -31,20 +31,16 @@ public:
     
     void visibilitySliderChanged(int & visilibility_slider);
     
-    bool game_started = false;
-    bool difficulty_chosen = false; // i dont think is 
-    bool character_type_chosen = false;
-    
     bool game_mode_chosen = false;
-    
     bool GAME_MODE_FREE = false; // TRUE if player decides to play free game mode (has battling)
-    bool GAME_MODE_TIME = false; // TRUE if player decides to play time mode (has timer and maze generator)
+    bool GAME_MODE_TIME = false; // TRUE if player decides to play time mode
      
     //Timed mode variables
     Timer current_timer;
     ofSoundPlayer pause_sound;
     
     //Free mode variables
+    bool character_type_chosen = false;
     ofxPanel free_gui;
     ofxIntSlider visilibility_slider;
     ofxButton difficulty_button;
@@ -55,11 +51,9 @@ public:
     
     
     // Camera / View variables
-    bool USE_CAMERA_INPUT = false; //TRUE if player decides to use camera input to move; FALSE if otherwise and by default
+    bool using_camera_input = false; //TRUE if player decides to use camera input to move; FALSE if otherwise and by default
     CameraTracking comp_tracking;
     ofVideoGrabber comp_camera; // Computer Camera
     ofEasyCam view_camera; // 3D view camera
     Maze current_maze;
-
-
 };

@@ -4,7 +4,6 @@
 //
 //  Created by Sherina Hung on 4/16/18.
 //
-///*
 #pragma once
 
 #include <stdio.h>
@@ -42,21 +41,21 @@ public:
     Character() {
         player_stats = CharacterType();
         character_list = new std::vector<CharacterType>;
-        enemy_list = new std::vector<CharacterType>;
+        monster_list = new std::vector<CharacterType>;
+        max_health = 0;
     };
     CharacterType player_stats;
     bool monster_not_init = true;
+    double max_health;
     
     std::vector<CharacterType> *character_list;
-    std::vector<CharacterType> *enemy_list;
+    std::vector<CharacterType> *monster_list;
     
-    void CharacterSetup();
-    std::string GenerateRaceMenuString();
-    void ChooseCharacterType();
-    void CharacterKeyPressed(int key);
-    void DrawCharacterStats();
-    void DetermineMonster(int key);
-    void ResetCharacterStats();
+    void CharacterSetup();                  //Populates the character and monster lists
+    std::string GenerateRaceMenuString();   //Generates the message string for choosing a character type
+    void ChooseCharacterType();             //Draws the screen for choosing a character type
+    void CharacterKeyPressed(int key);      //Determines the character type chosen
+    void DrawCharacterStats();              //Draws the character stats
+    void DetermineMonster(int key);         //Determines the monster
     
 };
-//*/

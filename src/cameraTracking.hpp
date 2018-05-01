@@ -18,10 +18,9 @@ public:
     
     int brightest_pixel_x; //X-coordinate of brightest pixel
     int brightest_pixel_y; //Y-coordinate of brightest pixel
-    int frequency_counter;
     
-    void FindPoint(ofVideoGrabber camera); 
-    void DrawStylus(int width, int height);
-    void ConvertPixelLocation(int width, int height);
+    void FindPoint(ofVideoGrabber camera);              //Finds the location of the brightest pixel
+    void DrawStylus(int width, int height);             //Draws a stylus around the brightest pixel
+    void ConvertPixelLocation(int width, int height);   //Converts the pixel's location according to the screen dimensions
 };
 

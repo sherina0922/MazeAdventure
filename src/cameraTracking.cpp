@@ -1,12 +1,18 @@
 #include "../src/cameraTracking.hpp"
 
-//--------------------------------------------------------------
+/**
+ * Constructor for CameraTracking. Sets the current brightest pixel locations to 0
+ */
 CameraTracking::CameraTracking() {
     brightest_pixel_x = 0;
     brightest_pixel_y = 0;
 }
 
-//--------------------------------------------------------------
+/**
+ * Determines the brightest pixel's location captured in the camera frame
+ *
+ * @param camera - the OfVideoGrabber camera that accesses the computer's camera
+ */
 void CameraTracking::FindPoint(ofVideoGrabber camera) {
     int camera_width = camera.getWidth();
     int camera_height = camera.getHeight();
@@ -20,8 +26,7 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
     for (int current_y = 0; current_y < camera_height; current_y++) {
         for (int current_x = 0; current_x < camera_width; current_x++) {
             
-            checking_brightness = camera.getPixels().getColor(current_x,
-                                                              current_y).getBrightness(); //get brightness at current pixel
+            checking_brightness = camera.getPixels().getColor(current_x, current_y).getBrightness(); //get brightness at current pixel
             
             if (checking_brightness > current_max_brightness) {
                 current_max_brightness = checking_brightness;
@@ -33,7 +38,12 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
     camera.update();
 }
 
-//--------------------------------------------------------------
+/**
+ * Draws a stylus (circle indicator) around the brightest pixel point
+ *
+ * @param width - the width of the screen
+ * @param height - the height of the screen
+ */
 void CameraTracking::DrawStylus(int width, int height) {
     //draws brightest point stylus
     ofPushMatrix();
@@ -50,8 +60,14 @@ void CameraTracking::DrawStylus(int width, int height) {
                        10, 30);
 }
 
-//--------------------------------------------------------------
+/**
+ * Converts the current brightest pixel's location according to screen dimensions
+ *
+ * @param width - the width of the screen
+ * @param height - the height of the screen
+ */
 void CameraTracking::ConvertPixelLocation(int width, int height) {
     brightest_pixel_x = -HALF * (brightest_pixel_x - width * HALF);
     brightest_pixel_y = -HALF * (brightest_pixel_y - height * HALF);
 }
+

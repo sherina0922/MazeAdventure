@@ -7,123 +7,124 @@
 
 #include "battleField.hpp"
 
-//--------------------------------------------------------------
-//currently not used due to changes in maze input file format
-int Battle::DetermineMonster(int posX, int posY) {
-    //either hard code like below or randomize or label each monster something diff when parsing in
-    if (posX == 3 && posY == 5) {
-        return 0;
-    } else if (posX == 15 && posY == 15) {
-        return 1;
-    } else if (posX == 29 && posY == 13) {
-        return 2;
-    }
-    return -1;
-}
-
-//--------------------------------------------------------------
-bool Battle::InitiateBattle(Character *player, int monster_number) {
-    //return true if player win, false if player dead
-    Character current_monster;
-    current_monster.player_stats = player->enemy_list->at(monster_number);
-    
-    while (player->player_stats.health > 0 && current_monster.player_stats.health > 0) {
-        //RunBattle(player, current_monster);
-        current_monster.player_stats.health -= player->player_stats.attack - current_monster.player_stats.defense;
-        player->player_stats.health -= current_monster.player_stats.attack - player->player_stats.defense;
-    }
-   
-    //ofSetBackgroundColor(0, 0, 0);
-    if (player->player_stats.health > 0) {
-        //player won
-        return true;
-    } else {
-        //monster won
-        ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("YOU DIED!", ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF);
-        return false;
-    }
-}
-
-//--------------------------------------------------------------
-bool Battle::DrawBattle(Character *player, Character *monster, bool stop_pressed) {
+/**
+ * Draws the battle screen and calls RunBattle to determine the status of the battle
+ *
+ * @param player - the Character of the player
+ * @param monster - the Character of the current monster
+ * @return TRUE if battle is over; FALSE otherwise
+ */
+bool Battle::DrawBattle(Character *player, Character *monster) {
     ofBackground(0, 0, 0);
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-    player->DrawCharacterStats();
     
     ofDrawBitmapString("Press space to stop", ofGetWindowWidth() * HALF, ofGetWindowHeight() * std::pow(HALF, 2));
     
-    ofSetColor(FULL_COLOR, FULL_COLOR * HALF, 0); //Set to ORANGE
+    ofSetColor(FULL_COLOR, FULL_COLOR * HALF, 0); //set color ORANGE
     ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, INITIAL_RADIUS * HALF);
     
-    ofSetColor(0, FULL_COLOR, 0); //Set to GREEN
-    ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, 20);
+    ofSetColor(0, FULL_COLOR, 0); //set color GREEN
+    ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, INITIAL_RADIUS * HALF * HALF);
     
     ofNoFill();
-    ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //Set to GREEN
-    if (!stop_pressed && radius >= 0) {
-        radius -= 1.5;
+    ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //set color GREEN
+    if (!stop_clicked && radius >= 0) {
+        //radius should change as time passes
+        radius -= DECREASE_RADIUS;
     }
-    ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, radius); //radius should change as time passes
+    ofDrawCircle(ofGetWindowWidth() * HALF, ofGetWindowHeight() * HALF, radius);
     
-    ofTranslate(OFFSET_X, 100);
+    //display player and monster stats
+    ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+    player->DrawCharacterStats();
+    ofTranslate(OFFSET_X, TRANSLATE_MONSTER_STATS_Y);
     monster->DrawCharacterStats();
+    
+    bool result = RunBattle(player, monster, radius);
+    if (stop_clicked || (!stop_clicked && radius <= 0)) {
+        //reset circles
+        radius = INITIAL_RADIUS;
+        stop_clicked = false;
+    }
+    return result; //false if neither is dead, true if one side is dead and battle over
+}
+
+/**
+ * Runs the battle depending on whether the stop is clicked, where the circle is stopped, and determines
+ * the amount of attack dealt to the monster. If player or monster dies, returns TRUE
+ *
+ * @param player - the Character of the player
+ * @param monster - the Character of the current monster
+ * @param radius - the current radius of the white circle
+ * @return TRUE if battle is over; FALSE otherwise
+ */
+bool Battle::RunBattle(Character *player, Character *monster, int radius) {
     float damage = 0;
-    if (stop_pressed) {
+    if (stop_clicked) {
         //determine damage depending on where circle is stopped
-        if (radius <= 20) {
-            damage = 2 * player->player_stats.attack - monster->player_stats.defense;
+        if (radius <= INITIAL_RADIUS * HALF * HALF) {
+            //inner green circle
+            damage = player->player_stats.attack - monster->player_stats.defense;
         } else if (radius <= INITIAL_RADIUS * HALF) {
-            damage = 0.95 * (player->player_stats.attack) - monster->player_stats.defense;
+            //inner orange circle
+            damage = MEDIUM_DAMAGE_PERCENTAGE * (player->player_stats.attack) - monster->player_stats.defense;
         } else {
-            damage = 0.75 * (player->player_stats.attack) - monster->player_stats.defense;
+            damage = LOW_DAMAGE_PERCENTAGE * (player->player_stats.attack) - monster->player_stats.defense;
         }
         if (damage > 0) {
             monster->player_stats.health -= damage;
             if (monster->player_stats.health <= 0) {
                 //if monster is dead
                 monster->player_stats.isDead = true;
+                //reset player health after each battle
+                monster->player_stats.health = monster->max_health;
+                player->player_stats.health = player->max_health;
                 return true;
-            } else {
-                //if monster not dead, monster's turn to attack
-                damage = (monster->player_stats.attack) - player->player_stats.defense;
-                if (damage <= 0) {
-                    damage = 0;
-                }
+            }
+            //monster attacks
+            damage = (monster->player_stats.attack) - player->player_stats.defense;
+            if (damage > 0) {
                 player->player_stats.health -= damage;
             }
         }
-        
-        if (player->player_stats.health <= 0) {
-            player->player_stats.isDead = true;
-            return true;
-        } else if (monster->player_stats.health <= 0) {
-            monster->player_stats.isDead = true;
-            
-            return true;
-        } else {
-            radius = INITIAL_RADIUS;
-            stop_clicked = false;
-            return false;
+    } else if (!stop_clicked && radius < 0) {
+        //if player didn't click to stop, monster still gets to attack
+        damage = (monster->player_stats.attack) - player->player_stats.defense;
+        if (damage > 0) {
+            player->player_stats.health -= damage;
         }
-    } else if (!stop_pressed && radius < 0) {
-         //damage = 0.25 * (player.player_stats.attack) - monster.player_stats.defense;
-        radius = INITIAL_RADIUS;
-        stop_pressed = false;
         return false;
     }
-    //monster.player_stats.health -= damage;
+    
+    //check if player or monster is dead
+    if (player->player_stats.health <= 0) {
+        player->player_stats.isDead = true;
+        return true;
+    } else if (monster->player_stats.health <= 0) {
+        monster->player_stats.isDead = true;
+        //reset player health after each battle
+        player->player_stats.health = player->max_health;
+        return true;
+    }
     return false;
 }
 
-//--------------------------------------------------------------
+/**
+ * Sets stop_clicked to true if space key is pressed
+ *
+ * @param key - the unicode value of the key pressed
+ */
 void Battle::BattleKeyPressed(int key) {
     if (key == ' ') {
         SetStopClicked(true);
     }
 }
 
-//--------------------------------------------------------------
+/**
+ * Sets the new status of stop_clicked
+ *
+ * @param new_status - the new stop_clicked status
+ */
 void Battle::SetStopClicked(bool new_status) {
     stop_clicked = new_status;
 }

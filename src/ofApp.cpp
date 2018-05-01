@@ -1,9 +1,10 @@
-//ofApp.cpp
 #include "ofApp.h"
 #include <iostream>
 #include <cmath>
 
-//--------------------------------------------------------------
+/**
+ * Sets up and initializes the basic elements of the different game components
+ */
 void ofApp::setup() {
     ofSetFrameRate(FRAME_RATE);
     
@@ -21,7 +22,7 @@ void ofApp::setup() {
     // Free mode visilibility slider setup || Derived from guiExample
     free_gui.setup();
     visilibility_slider.addListener(this, &ofApp::visibilitySliderChanged);
-    free_gui.add(visilibility_slider.setup("Visilibility", 1, 1, WIDTH)); //title, initial, min, max
+    free_gui.add(visilibility_slider.setup("Visilibility", INITIAL_VISIBILITY, 1, WIDTH)); //title, initial, min, max
     
     player = new Character();
     current_monster = new Character();
@@ -29,20 +30,25 @@ void ofApp::setup() {
     current_monster->CharacterSetup();
 }
 
-//--------------------------------------------------------------
+/**
+ * Updates the different game components
+ */
 void ofApp::update() {
-    if (USE_CAMERA_INPUT) {
+    if (using_camera_input) {
         comp_tracking.FindPoint(comp_camera);
     }
 }
 
-//--------------------------------------------------------------
+/**
+ * Draws the display depending on the status of different variables
+ */
 void ofApp::draw() {
     ofBackground(0, 0, 0);
     
     if (!game_mode_chosen) {
         ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() * HALF, ofGetHeight() * HALF);
+        ofDrawBitmapString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() * HALF,
+                           ofGetHeight() * HALF);
         return;
     }
     
@@ -53,45 +59,42 @@ void ofApp::draw() {
         }
         free_gui.draw(); //draws visibility slider
         player->DrawCharacterStats();
-        if (player->player_stats.isDead) {
-            ofDrawBitmapString("YOU DIED!", ofGetScreenWidth() * HALF, ofGetScreenHeight() * HALF);
-            current_timer.game_over_sound.play();
-        }
     }
     
     view_camera.begin(); //perspective camera
     
     if (current_maze.inBattleMode) {
-        //current_battle.InitiateBattle(player, current_maze.at(current_maze.current_posX).at(current_maze.current_posY));
-        view_camera.setDistance(INITIAL_VIEW_DISTANCE); //reset and lock view
         view_camera.end();
         if (current_monster->monster_not_init) {
             //initialize monster's stats
-            current_monster->ResetCharacterStats();
-            current_monster->DetermineMonster(current_maze.maze_structure[current_maze.current_posX][current_maze.current_posY]);
+            current_monster->DetermineMonster(
+                                              current_maze.maze_structure[current_maze.current_posX][current_maze.current_posY]);
             current_monster->monster_not_init = false;
         }
-        current_maze.inBattleMode = !current_battle.DrawBattle(player, current_monster, current_battle.stop_clicked); //whether or not in battle mode determined by battle result
-        //if (!current_maze.inBattleMode) {
-            //reset the monster to uninitialized
-            //current_monster->monster_not_init = true;
-            //current_monster->ResetCharacterStats();
-        //}
+        //whether or not in battle mode determined by battle result , current_battle.stop_clicked
+        current_maze.inBattleMode = !current_battle.DrawBattle(player, current_monster);
+        
     } else {
         current_maze.DrawMaze(); //draw maze and player cubes
         current_monster->monster_not_init = true;
     }
     
-    if (USE_CAMERA_INPUT) {
+    if (using_camera_input) {
         comp_tracking.DrawStylus(comp_camera.getWidth(), comp_camera.getHeight());
         current_maze.CameraMovePosition(comp_tracking.brightest_pixel_x, comp_tracking.brightest_pixel_y);
     }
     
     view_camera.end();
     
+    if (player->player_stats.isDead) {
+        current_maze.SetMazeCompleted(true);
+        ofBackground(0, 0, 0);
+        ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+        ofDrawBitmapString("YOU DIED!", ofGetScreenWidth() * HALF, ofGetScreenHeight() * HALF);
+    }
+    
     if (GAME_MODE_TIME) {
-        //setup timer here
-        //if time is not up, continue to draw the maze and regenerate if needed
+        //if time is not up, continue to draw the maze and regenerate
         if (current_maze.game_ended) {
             ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
             ofSetColor(0, 0, 0);
@@ -101,18 +104,22 @@ void ofApp::draw() {
         if (current_timer.timer_ended) {
             ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
             ofSetColor(0, 0, 0);
-            ofDrawBitmapString("TIME IS UP!\nNumber of mazes completed: " + std::to_string(current_maze.number_games - 1)
-                               , ofGetWidth() * HALF, ofGetHeight() * HALF);
+            ofDrawBitmapString("TIME IS UP!\nNumber of mazes completed: " + std::to_string(current_maze.number_games - 1),
+                               ofGetWidth() * HALF, ofGetHeight() * HALF);
         } else {
             current_timer.DrawTimer();
         }
     }
 }
 
-//--------------------------------------------------------------
+/**
+ * Resets the game
+ *
+ * @param &object - the ofApp object to be reset
+ */
 static void reset(ofApp &object) {
     object.game_mode_chosen = object.GAME_MODE_FREE = object.GAME_MODE_TIME = false;
-    object.USE_CAMERA_INPUT = false;
+    object.using_camera_input = false;
     object.character_type_chosen = false;
     
     object.current_maze.inBattleMode = object.current_maze.maze_completed = false;
@@ -128,7 +135,11 @@ static void reset(ofApp &object) {
     object.setup();
 }
 
-//--------------------------------------------------------------
+/**
+ * Determines the executable action based on the key pressed
+ *
+ * @param key - the Unicode value of the key pressed
+ */
 void ofApp::keyPressed(int key) {
     if (game_mode_chosen && GAME_MODE_FREE && !character_type_chosen) {
         switch (key) { //choosing character type
@@ -151,7 +162,7 @@ void ofApp::keyPressed(int key) {
             
         case 'c':
             //Use camera movement input
-            USE_CAMERA_INPUT = !USE_CAMERA_INPUT;
+            using_camera_input = !using_camera_input;
             view_camera.reset();
             if (view_camera.getMouseInputEnabled()) //ofEasyCam camera movement, lock or unlock model movement
                 view_camera.disableMouseInput();
@@ -174,7 +185,6 @@ void ofApp::keyPressed(int key) {
             ofToggleFullscreen();
             break;
             
-        case 't': //reset timer
         case 'p': //pause timer
             current_timer.TimerKeyPressed(key);
             pause_sound.play();
@@ -190,10 +200,10 @@ void ofApp::keyPressed(int key) {
         case '2': //choosing timed game mode
             if (!game_mode_chosen) {
                 game_mode_chosen = GAME_MODE_TIME = true;
-                current_maze.SetMode(SIZE); //set initial mode visibility to the size
+                current_maze.SetVisibility(SIZE); //set initial mode visibility to the size
                 current_maze.free_game_mode = false;
                 current_maze.TimeMazeSetup();
-                current_timer.TimerKeyPressed('t');
+                current_timer.TimerKeyPressed('t'); //"reset" or initialize timer to start
             }
             break;
         case 'm':
@@ -210,12 +220,13 @@ void ofApp::keyPressed(int key) {
     }
 }
 
-//--------------------------------------------------------------
+/**
+ * Changes the maze visibility depending on the status of the visibility slider
+ *
+ * @param visilibility_slider - the slider gui that allows the user to change the visibility
+ */
 void ofApp::visibilitySliderChanged(int &visilibility_slider) {
-    current_maze.SetMode(visilibility_slider);
-    current_maze.DrawMaze();
-    
-    current_maze.SetMode(visilibility_slider);
+    current_maze.SetVisibility(visilibility_slider);
     current_maze.DrawMaze();
 }
 
@@ -267,3 +278,6 @@ void ofApp::gotMessage(ofMessage msg) {
 void ofApp::dragEvent(ofDragInfo dragInfo) {
     
 }
+
+
+
