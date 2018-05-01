@@ -1,4 +1,4 @@
-# CS 126 FinalProject
+# CS 126 Final Project
 
 ## Project Summary
 The game itself runs similar to a typical maze game in which the player tries to reach the exit. This game has two modes: Free mode and Timed mode. In the free mode, the player can choose a character type (Warrior, Magician, etc.),  can choose the visibility settings, and plays a circle-target mini-game when encountering a monster. In the timed mode, the player tries to go through as many mazes as possible within the time limit. The visibility of the maze decreases as the player clears more mazes.
@@ -9,6 +9,9 @@ In both modes, the player moves using WASD keys, can reset the entire game ('r')
 While in development, the game was built in XCode and requires the standard OF libraries as well as the ofxGui library. 
 
 ## Sources
-Game sound effects - http://www.mariomayhem.com/downloads/sounds/
-Game idea source and free mode maze source - https://www.youtube.com/watch?v=9Ozu-B2HLY4
+
+- Game sound effects 
+  - http://www.mariomayhem.com/downloads/sounds/
+- Game idea source and free mode maze source 
+  - https://www.youtube.com/watch?v=9Ozu-B2HLY4
 
