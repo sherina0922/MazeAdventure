@@ -7,13 +7,12 @@
  */
 void ofApp::setup() {
     ofSetFrameRate(FRAME_RATE);
-    
     ofSetVerticalSync(true);
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-    ofSetCircleResolution(50);
+    ofSetCircleResolution(CONSTANT_CIRCLE_RESOLUTION);
     
     view_camera.setDistance(INITIAL_VIEW_DISTANCE);
-    comp_camera.initGrabber(1280, 720);
+    comp_camera.initGrabber(GRABBER_X, GRABBER_Y);
     current_maze.FreeMazeSetup(player);
     
     current_timer.TimerSetup();
@@ -28,12 +27,16 @@ void ofApp::setup() {
     current_monster = new Character();
     player->CharacterSetup();
     current_monster->CharacterSetup();
+    
+    ofTrueTypeFont::setGlobalDpi(DEFAULT_DPI);
+    font.load("courier_new.ttf", DEFAULT_FONT_SIZE, false);
 }
 
 /**
  * Updates the different game components
  */
 void ofApp::update() {
+    comp_camera.update();
     if (using_camera_input) {
         comp_tracking.FindPoint(comp_camera);
     }
@@ -43,16 +46,18 @@ void ofApp::update() {
  * Draws the display depending on the status of different variables
  */
 void ofApp::draw() {
-    ofBackground(0, 0, 0);
+    ofBackground(0, 0, 0); // Set background color to BLACK
     
     if (!game_mode_chosen) {
-        ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() * HALF,
-                           ofGetHeight() * HALF);
+        DrawChooseGameMode();
         return;
     }
-    
     if (GAME_MODE_FREE) {
+        if (!current_maze.picture_taken) {
+            //take picture
+            comp_camera.draw(0, 0);
+            return;
+        }
         if (!character_type_chosen) { //Choosing character type settings
             player->ChooseCharacterType();
             return;
@@ -64,21 +69,11 @@ void ofApp::draw() {
     view_camera.begin(); //perspective camera
     
     if (current_maze.inBattleMode) {
-        view_camera.end();
-        if (current_monster->monster_not_init) {
-            //initialize monster's stats
-            current_monster->DetermineMonster(
-                                              current_maze.maze_structure[current_maze.current_posX][current_maze.current_posY]);
-            current_monster->monster_not_init = false;
-        }
-        //whether or not in battle mode determined by battle result , current_battle.stop_clicked
-        current_maze.inBattleMode = !current_battle.DrawBattle(player, current_monster);
-        
+        DrawBattleField();
     } else {
         current_maze.DrawMaze(); //draw maze and player cubes
         current_monster->monster_not_init = true;
     }
-    
     if (using_camera_input) {
         comp_tracking.DrawStylus(comp_camera.getWidth(), comp_camera.getHeight());
         current_maze.CameraMovePosition(comp_tracking.brightest_pixel_x, comp_tracking.brightest_pixel_y);
@@ -88,51 +83,82 @@ void ofApp::draw() {
     
     if (player->player_stats.isDead) {
         current_maze.SetMazeCompleted(true);
-        ofBackground(0, 0, 0);
-        ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-        ofDrawBitmapString("YOU DIED!", ofGetScreenWidth() * HALF, ofGetScreenHeight() * HALF);
+        DrawPlayerDead();
     }
-    
     if (GAME_MODE_TIME) {
-        //if time is not up, continue to draw the maze and regenerate
-        if (current_maze.game_ended) {
-            ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-            ofSetColor(0, 0, 0);
-            ofDrawBitmapString("CONGRATULATIONS!\nYOU WIN!", ofGetWidth() * HALF, ofGetHeight() * HALF);
-            return;
-        }
-        if (current_timer.timer_ended) {
-            ofBackground(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-            ofSetColor(0, 0, 0);
-            ofDrawBitmapString("TIME IS UP!\nNumber of mazes completed: " + std::to_string(current_maze.number_games - 1),
-                               ofGetWidth() * HALF, ofGetHeight() * HALF);
-        } else {
-            current_timer.DrawTimer();
-        }
+        DrawTimedMode();
     }
 }
 
 /**
- * Resets the game
- *
- * @param &object - the ofApp object to be reset
+ * Draws the choose game mode screen
  */
-static void reset(ofApp &object) {
-    object.game_mode_chosen = object.GAME_MODE_FREE = object.GAME_MODE_TIME = false;
-    object.using_camera_input = false;
-    object.character_type_chosen = false;
+void ofApp::DrawChooseGameMode() {
+    ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+    font.drawString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() * HALF - CHOOSE_MODE_OFFSET_X,
+                    ofGetHeight() * HALF - CHOOSE_MODE_OFFSET_Y);
     
-    object.current_maze.inBattleMode = object.current_maze.maze_completed = false;
-    object.current_maze.number_games = 0;
+}
+
+/**
+ * Draws the battle mini-game in the free mode
+ */
+void ofApp::DrawBattleField() {
+    view_camera.end();
+    if (current_monster->monster_not_init) {
+        //initialize monster's stats
+        current_monster->DetermineMonster(current_maze.maze_structure[current_maze.current_posX][current_maze.current_posY]);
+        current_monster->monster_not_init = false;
+    }
+    //whether or not in battle mode determined by battle result
+    current_maze.inBattleMode = !current_battle.DrawBattle(player, current_monster);
+}
+
+/**
+ * Draws the timed mode visuals
+ */
+void ofApp::DrawTimedMode() {
+    //if time is not up, continue to draw the maze and regenerate
+    if (current_maze.game_ended) {
+        ofTranslate(ofGetWidth() * HALF, ofGetHeight() * HALF);
+        current_maze.DrawWin();
+        return;
+    }
+    if (current_timer.timer_ended) {
+        current_timer.DrawTimeUp(current_maze.number_games);
+    } else {
+        current_timer.DrawTimer();
+    }
+}
+
+/**
+ * Draws the screen when the player has died in free mode
+ */
+void ofApp::DrawPlayerDead() {
+    ofBackground(0, 0, 0);
+    ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
+    font.drawString("YOU DIED!", ofGetScreenWidth() * HALF, ofGetScreenHeight() * HALF);
+}
+
+/**
+ * Resets the game
+ */
+void ofApp::reset() {
+    game_mode_chosen = GAME_MODE_FREE = GAME_MODE_TIME = false;
+    using_camera_input = false;
+    character_type_chosen = false;
     
-    object.current_battle.radius = INITIAL_RADIUS;
+    current_maze.inBattleMode = current_maze.maze_completed = false;
+    current_maze.game_ended = current_maze.picture_taken = false;
+    current_maze.number_games = 0;
     
-    object.current_timer.timer_paused = false;
-    object.current_timer.TimerKeyPressed('t');
+    current_battle.radius = INITIAL_RADIUS;
     
-    object.view_camera.reset();
+    current_timer.timer_paused = false;
+    current_timer.TimerKeyPressed('t');
     
-    object.setup();
+    view_camera.reset();
+    setup();
 }
 
 /**
@@ -157,7 +183,7 @@ void ofApp::keyPressed(int key) {
     }
     switch (key) {
         case 'r': //reset entire game
-            reset(*this);
+            reset();
             break;
             
         case 'c':
@@ -186,8 +212,10 @@ void ofApp::keyPressed(int key) {
             break;
             
         case 'p': //pause timer
-            current_timer.TimerKeyPressed(key);
-            pause_sound.play();
+            if (GAME_MODE_TIME) {
+                current_timer.TimerKeyPressed(key);
+                pause_sound.play();
+            }
             break;
             
         case '1': //choosing free game mode
@@ -211,7 +239,13 @@ void ofApp::keyPressed(int key) {
             current_maze.inBattleMode = false;
             break;
             
-        case ' ': //stop circle in battle
+        case ' ': // take screenshot or stop circle in battle
+            if (!current_maze.picture_taken) {
+                current_maze.player_box_image.grabScreen(0, 0 , ofGetWidth(), ofGetHeight());
+                current_maze.player_box_image.save("player_screenshot.png");
+                current_maze.picture_taken = true;
+                return;
+            }
             current_battle.stop_clicked = true;
             break;
             

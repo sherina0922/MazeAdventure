@@ -21,11 +21,13 @@ public:
     bool timer_paused = false;
     float time_remaining;
     ofSoundPlayer game_over_sound;
+    ofTrueTypeFont font;
     
-    void TimerSetup();              //Sets up the timer
-    void DrawTimer();               //Draws the timer
-    void TimerKeyPressed(int key);  //Determines pause or reset
-    void SetStartTime(float time);  //Sets start time to new time
+    void TimerSetup();                      // Sets up the timer
+    void DrawTimer();                       // Draws the timer
+    void TimerKeyPressed(int key);          // Determines pause or reset
+    void SetStartTime(float time);          // Sets start time to new time
+    void DrawTimeUp(int mazes_completed);   // Draws the time up screen
     
 };
 

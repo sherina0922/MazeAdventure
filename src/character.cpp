@@ -4,7 +4,7 @@
 //
 //  Created by Sherina Hung on 4/16/18.
 //
-///*
+
 #include "character.hpp"
 
 /**
@@ -19,7 +19,11 @@ void Character::CharacterSetup() {
     monster_list->push_back(CharacterType("Goblin", 20, 12, 10));
     monster_list->push_back(CharacterType("Thief", 25, 15, 10));
     monster_list->push_back(CharacterType("Vampire", 20, 13, 10));
+    monster_list->push_back(CharacterType("Pirate", 25, 16, 11));
+    monster_list->push_back(CharacterType("Ghost", 24, 17, 10));
     
+    ofTrueTypeFont::setGlobalDpi(DEFAULT_DPI);
+    font.load("courier_new.ttf", DEFAULT_FONT_SIZE, false);
 }
 
 /**
@@ -40,7 +44,7 @@ std::string Character::GenerateRaceMenuString() {
  */
 void Character::ChooseCharacterType() {
     ofBackground(0, 0, 0);
-    ofDrawBitmapString(GenerateRaceMenuString(), ofGetScreenWidth() / 4, ofGetScreenHeight() * HALF);
+    font.drawString(GenerateRaceMenuString(), ofGetWidth() * HALF - CHOOSE_CHARACTER_OFFSET_X , ofGetScreenHeight() * HALF - CHOOSE_CHARACTER_OFFSET_Y);
 }
 
 /**

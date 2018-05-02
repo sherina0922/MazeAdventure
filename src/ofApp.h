@@ -29,17 +29,23 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    void visibilitySliderChanged(int & visilibility_slider);
+    void visibilitySliderChanged(int & visilibility_slider);    // Changes the maze visibility
+    void DrawPlayerDead();                                      // Draws the player dead screen
+    void DrawTimedMode();                                       // Draws the timed mode visuals
+    void DrawBattleField();                                     // Draws the battle in free mode visuals
+    void DrawChooseGameMode();                                  // Draws the choose game mode screen
+    void reset();                                               // Resets the entire game
     
+    // Status variables
     bool game_mode_chosen = false;
     bool GAME_MODE_FREE = false; // TRUE if player decides to play free game mode (has battling)
     bool GAME_MODE_TIME = false; // TRUE if player decides to play time mode
      
-    //Timed mode variables
+    // Timed mode elements
     Timer current_timer;
     ofSoundPlayer pause_sound;
     
-    //Free mode variables
+    // Free mode elements
     bool character_type_chosen = false;
     ofxPanel free_gui;
     ofxIntSlider visilibility_slider;
@@ -49,11 +55,11 @@ public:
     Character *current_monster;
     Battle current_battle;
     
-    
-    // Camera / View variables
+    // Camera and view elements
     bool using_camera_input = false; //TRUE if player decides to use camera input to move; FALSE if otherwise and by default
     CameraTracking comp_tracking;
     ofVideoGrabber comp_camera; // Computer Camera
     ofEasyCam view_camera; // 3D view camera
     Maze current_maze;
+    ofTrueTypeFont font;
 };
