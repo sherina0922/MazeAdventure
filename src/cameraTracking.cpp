@@ -27,7 +27,6 @@ void CameraTracking::FindPoint(ofVideoGrabber camera) {
         for (int current_x = 0; current_x < camera_width; current_x++) {
             
             checking_brightness = camera.getPixels().getColor(current_x, current_y).getBrightness(); //get brightness at current pixel
-            
             if (checking_brightness > current_max_brightness) {
                 current_max_brightness = checking_brightness;
                 brightest_pixel_x = current_x;
@@ -51,13 +50,13 @@ void CameraTracking::DrawStylus(int width, int height) {
     
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR); //white
     ofNoFill();
-    ofDrawCircle(brightest_pixel_x, brightest_pixel_y, 5);
+    ofDrawCircle(brightest_pixel_x, brightest_pixel_y, CAMERA_STYLUS_OUTER);
     ofFill();
-    ofDrawCircle(brightest_pixel_x, brightest_pixel_y, 2);
+    ofDrawCircle(brightest_pixel_x, brightest_pixel_y, CAMERA_STYLUS_INNER);
     ofPopMatrix();
     
-    ofDrawBitmapString("USING CAMERA INPUT\nthe current pixel locations" + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y),
-                       -20, CAMERA_MODE_SIGN_Y);
+    ofDrawBitmapString("USING CAMERA INPUT\nthe current pixel location " + std::to_string(brightest_pixel_x) + ":" + std::to_string(brightest_pixel_y),
+                       0, CAMERA_MODE_SIGN_Y);
 }
 
 /**

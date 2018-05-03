@@ -23,5 +23,6 @@ public:
     bool DrawBattle(Character *player, Character *monster);             // Draws the battle (circles and character stats)
     void BattleKeyPressed(int key);                                     // Sets stop_clicked to true if space key pressed
     bool RunBattle(Character *player, Character *monster, int radius);  // Determines the outcome of the battle
+    void BattleReset();                                                 // Reset the battle state
 };
 

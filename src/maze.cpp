@@ -75,17 +75,16 @@ void Maze::DrawMaze() {
     if (maze_completed) {
         if (free_game_mode) {
             DrawWin();
+            return;
         } else {
             maze_completed = false;
             TimeMazeSetup();
             return;
         }
     } else {
-        ofSetColor(0, 0, 0); // set default to BLACK
-        
         for (int current_y = 0; current_y < HEIGHT; current_y++) {
             for (int current_x = 0; current_x < WIDTH; current_x++) {
-                
+                ofSetColor(0, 0, 0); // set default to BLACK
                 if (std::abs(current_x - current_posX) < visibility &&
                     std::abs(current_y - current_posY) < visibility) {
                     // if within the visibility
@@ -110,6 +109,8 @@ void Maze::DrawMaze() {
         ofTranslate(BoxTranslateCoordinates(free_game_mode, current_posX, true),
                     BoxTranslateCoordinates(free_game_mode, current_posY, false), 0);
         if (free_game_mode && picture_taken) {
+            // Code below derived from ofBox example
+            // Use image of user on player box
             player_box_image.bind();
             ofFill();
             ofSetColor(FULL_COLOR);
@@ -167,8 +168,8 @@ void Maze::ReadMazeFromFile() {
         file_name = "maze-data.txt";
     }
     ofBuffer buffer = ofBufferFromFile(file_name);
-    for (ofBuffer::Line it = buffer.getLines().begin(), end = buffer.getLines().end(); it != end; ++it) {
-        line = *it;
+    for (ofBuffer::Line iterator = buffer.getLines().begin(), end = buffer.getLines().end(); iterator != end; ++iterator) {
+        line = *iterator;
         if(!line.empty()) {
             file_contents += line;
         }
@@ -230,7 +231,6 @@ void Maze::TimeMazeSetup() {
     if (generated_maze_vector.empty()) {
         ReadMazeFromFile();
     }
-    
     maze_structure.resize(SIZE);
     for (int index = 0; index < SIZE; index++) {
         maze_structure[index].resize(SIZE);
@@ -279,7 +279,6 @@ void Maze::MazeKeyPressed(const char key) {
     if (inBattleMode) {
         return;
     }
-    
     switch (key) {
         case 'w':
             // Move up
@@ -324,10 +323,9 @@ void Maze::CameraMovePosition(int camera_current_x, int camera_current_y) {
         || std::abs(camera_current_y) > MAZE_TRANSLATE) {
         return;
     }
-    
+
     //Determine which direction to move from angle of brightest point
     //Splits screen into "triangles"
-    
     double pixel_slope = std::atan(camera_current_y / camera_current_x);
     if (pixel_slope > 0) {
         if (camera_current_x > 0) {
@@ -412,3 +410,21 @@ void Maze::CheckGameStatus() {
     }
 }
 
+/**
+ * Resets the maze
+ */
+void Maze::MazeReset() {
+    inBattleMode = maze_completed = game_ended = false;
+    number_games = 0;
+    player_box_image.clear();
+    image_loaded = picture_taken = false;
+}
+
+/**
+ * Takes a picture of the current screen and saves the image for the player box
+ */
+void Maze::MazeTakePicture() {
+    player_box_image.grabScreen(0, 0 , ofGetWidth(), ofGetHeight());
+    player_box_image.save("player_screenshot.png");
+    picture_taken = true;
+}

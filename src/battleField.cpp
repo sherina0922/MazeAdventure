@@ -19,8 +19,7 @@ bool Battle::DrawBattle(Character *player, Character *monster) {
     ofTrueTypeFont::setGlobalDpi(DEFAULT_DPI);
     font.load("courier_new.ttf", DEFAULT_FONT_SIZE, false);
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
-    font.drawString("Press space to stop", ofGetWindowWidth() * HALF - BATTLE_OFFSET_X ,
-                       BATTLE_OFFSET_Y + ofGetWindowHeight() * std::pow(HALF, 2));
+    font.drawString("Press space to stop", ofGetWindowWidth() * HALF - BATTLE_OFFSET_X, BATTLE_OFFSET_Y + ofGetWindowHeight() * HALF * HALF);
     // draw circles
     ofSetColor(FULL_COLOR, FULL_COLOR * HALF, 0); // set color ORANGE
     ofNoFill();
@@ -46,9 +45,7 @@ bool Battle::DrawBattle(Character *player, Character *monster) {
     
     bool result = RunBattle(player, monster, radius);
     if (stop_clicked || (!stop_clicked && radius <= 0)) {
-        //reset circles
-        radius = INITIAL_RADIUS;
-        stop_clicked = false;
+        BattleReset();
     }
     return result; //false if neither is dead, true if one side is dead and battle over
 }
@@ -107,7 +104,7 @@ bool Battle::RunBattle(Character *player, Character *monster, int radius) {
         return true;
     } else if (monster->player_stats.health <= 0) {
         monster->player_stats.isDead = true;
-        //reset player health after each battle
+        // reset player health after each battle
         player->player_stats.health = player->max_health;
         return true;
     }
@@ -132,4 +129,12 @@ void Battle::BattleKeyPressed(int key) {
  */
 void Battle::SetStopClicked(bool new_status) {
     stop_clicked = new_status;
+}
+
+/**
+ * Reset the battle state
+ */
+void Battle::BattleReset() {
+    radius = INITIAL_RADIUS;
+    stop_clicked = false;
 }

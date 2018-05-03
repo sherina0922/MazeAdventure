@@ -9,15 +9,12 @@
 
 #include <stdio.h>
 #include "ofMain.h"
-#include "mazeGenerator.hpp"
 #include <vector>
 #include <fstream>
 
 #include "constants.cpp"
 #include "character.hpp"
 #include "battleField.hpp"
-
-//static bool inBattleMode = false;
 
 class Maze {
     public :
@@ -56,6 +53,8 @@ class Maze {
     void ReadMazeFromFile();                                                // Reads the maze data from text files
     int BoxTranslateCoordinates(bool isFreeMode, int location, bool isX);   // Translates the location of boxes
     void DrawWin();                                                         // Draws the win screen
+    void MazeReset();                                                       // Reset the maze
+    void MazeTakePicture();                                                 // Takes a picture of the current screen
     
 };
 

@@ -54,24 +54,33 @@ void ofApp::draw() {
     }
     if (GAME_MODE_FREE) {
         if (!current_maze.picture_taken) {
-            //take picture
+            // take picture
             comp_camera.draw(0, 0);
             return;
-        }
-        if (!character_type_chosen) { //Choosing character type settings
+        } else if (!character_type_chosen) {
             player->ChooseCharacterType();
             return;
+        } else if (!player->player_name_set) {
+            player->DrawPlayerName();
+            return;
         }
-        free_gui.draw(); //draws visibility slider
+        free_gui.draw(); // draws visibility slider
         player->DrawCharacterStats();
+    } else {
+        // timed mode
+        if (!current_timer.max_time_set) {
+            current_timer.DrawSetMaxTime();
+            return;
+        }
     }
     
-    view_camera.begin(); //perspective camera
+    view_camera.begin(); // perspective camera
     
     if (current_maze.inBattleMode) {
+        using_camera_input = false;
         DrawBattleField();
     } else {
-        current_maze.DrawMaze(); //draw maze and player cubes
+        current_maze.DrawMaze(); // draw maze and player cubes
         current_monster->monster_not_init = true;
     }
     if (using_camera_input) {
@@ -90,6 +99,7 @@ void ofApp::draw() {
     }
 }
 
+
 /**
  * Draws the choose game mode screen
  */
@@ -97,7 +107,6 @@ void ofApp::DrawChooseGameMode() {
     ofSetColor(FULL_COLOR, FULL_COLOR, FULL_COLOR);
     font.drawString("Choose which mode to play\n1. Free mode\n2. Timed mode", ofGetWidth() * HALF - CHOOSE_MODE_OFFSET_X,
                     ofGetHeight() * HALF - CHOOSE_MODE_OFFSET_Y);
-    
 }
 
 /**
@@ -106,11 +115,11 @@ void ofApp::DrawChooseGameMode() {
 void ofApp::DrawBattleField() {
     view_camera.end();
     if (current_monster->monster_not_init) {
-        //initialize monster's stats
+        // initialize monster's stats
         current_monster->DetermineMonster(current_maze.maze_structure[current_maze.current_posX][current_maze.current_posY]);
         current_monster->monster_not_init = false;
     }
-    //whether or not in battle mode determined by battle result
+    // whether or not in battle mode determined by battle result
     current_maze.inBattleMode = !current_battle.DrawBattle(player, current_monster);
 }
 
@@ -118,7 +127,7 @@ void ofApp::DrawBattleField() {
  * Draws the timed mode visuals
  */
 void ofApp::DrawTimedMode() {
-    //if time is not up, continue to draw the maze and regenerate
+    // if time is not up, continue to draw the maze and regenerate
     if (current_maze.game_ended) {
         ofTranslate(ofGetWidth() * HALF, ofGetHeight() * HALF);
         current_maze.DrawWin();
@@ -148,16 +157,13 @@ void ofApp::reset() {
     using_camera_input = false;
     character_type_chosen = false;
     
-    current_maze.inBattleMode = current_maze.maze_completed = false;
-    current_maze.game_ended = current_maze.picture_taken = false;
-    current_maze.number_games = 0;
-    
-    current_battle.radius = INITIAL_RADIUS;
-    
-    current_timer.timer_paused = false;
-    current_timer.TimerKeyPressed('t');
+    current_maze.MazeReset();
+    current_battle.BattleReset();
+    current_timer.TimerReset();
+    player->CharacterReset();
     
     view_camera.reset();
+    ofDisableNormalizedTexCoords();
     setup();
 }
 
@@ -180,23 +186,33 @@ void ofApp::keyPressed(int key) {
             default:
                 break;
         }
+    } else if (!player->player_name_set && character_type_chosen && GAME_MODE_FREE) {
+        player->CharacterKeyPressed(key);
+        return;
+    } else if (GAME_MODE_TIME && !current_timer.max_time_set) {
+        current_timer.TimerKeyPressed(key);
+        return;
     }
+    
     switch (key) {
-        case 'r': //reset entire game
+        case 'r': // reset entire game
             reset();
             break;
             
         case 'c':
-            //Use camera movement input
+            if (GAME_MODE_FREE && !player->player_name_set) {
+                return;
+            }
+            // use camera movement input
             using_camera_input = !using_camera_input;
             view_camera.reset();
-            if (view_camera.getMouseInputEnabled()) //ofEasyCam camera movement, lock or unlock model movement
+            if (view_camera.getMouseInputEnabled()) // ofEasyCam camera movement, lock or unlock model movement
                 view_camera.disableMouseInput();
             else
                 view_camera.enableMouseInput();
             break;
             
-        case 'w': //movement keys
+        case 'w': // movement keys
         case 'a':
         case 's':
         case 'd':
@@ -207,25 +223,25 @@ void ofApp::keyPressed(int key) {
             break;
             
         case 'f':
-            //Make full screen
+            // make full screen
             ofToggleFullscreen();
             break;
             
-        case 'p': //pause timer
+        case 'p': // pause timer
             if (GAME_MODE_TIME) {
                 current_timer.TimerKeyPressed(key);
                 pause_sound.play();
             }
             break;
             
-        case '1': //choosing free game mode
+        case '1': // choosing free game mode
             if (!game_mode_chosen) {
                 game_mode_chosen = GAME_MODE_FREE = true;
                 current_maze.FreeMazeSetup(player);
             }
             break;
             
-        case '2': //choosing timed game mode
+        case '2': // choosing timed game mode
             if (!game_mode_chosen) {
                 game_mode_chosen = GAME_MODE_TIME = true;
                 current_maze.SetVisibility(SIZE); //set initial mode visibility to the size
@@ -235,15 +251,13 @@ void ofApp::keyPressed(int key) {
             }
             break;
         case 'm':
-            //cheat command to exit battle sequence
+            // flee, automatically leave battle mode but will not regain health
             current_maze.inBattleMode = false;
             break;
             
         case ' ': // take screenshot or stop circle in battle
             if (!current_maze.picture_taken) {
-                current_maze.player_box_image.grabScreen(0, 0 , ofGetWidth(), ofGetHeight());
-                current_maze.player_box_image.save("player_screenshot.png");
-                current_maze.picture_taken = true;
+                current_maze.MazeTakePicture();
                 return;
             }
             current_battle.stop_clicked = true;
